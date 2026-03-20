@@ -1,307 +1,405 @@
-document.addEventListener('DOMContentLoaded', function () {
+// ========== LOADER (outside DOMContentLoaded so window load fires in time) ==========
+(function() {
+  function getEl(id) { return document.getElementById(id); }
 
-  // ===== CINEMATIC LOADER =====
-  const loadingScreen = document.getElementById('loadingScreen');
-  const loaderPct = document.getElementById('loaderPct');
   let pct = 0;
-  const pctTimer = setInterval(() => {
-    pct = Math.min(pct + Math.random() * 4 + 1, 99);
-    if (loaderPct) loaderPct.textContent = Math.floor(pct) + '%';
-  }, 60);
+  const interval = setInterval(() => {
+    if (pct < 100) {
+      pct = Math.min(pct + Math.random() * 8 + 2, 100);
+      const loaderPct = getEl('loaderPct');
+      const loaderBar = getEl('loaderBar');
+      if (loaderPct) loaderPct.textContent = Math.floor(pct) + '%';
+      if (loaderBar) loaderBar.style.width = pct + '%';
+    }
+  }, 80);
 
-  window.addEventListener('load', function () {
-    clearInterval(pctTimer);
+  function hideLoader() {
+    clearInterval(interval);
+    const loaderPct = getEl('loaderPct');
+    const loaderBar = getEl('loaderBar');
+    const loadingScreen = getEl('loadingScreen');
     if (loaderPct) loaderPct.textContent = '100%';
+    if (loaderBar) loaderBar.style.width = '100%';
     setTimeout(() => {
       if (loadingScreen) loadingScreen.classList.add('hidden');
-    }, 400);
+      document.body.style.overflow = 'auto';
+    }, 500);
+  }
+
+  if (document.readyState === 'complete') {
+    hideLoader();
+  } else {
+    window.addEventListener('load', hideLoader);
+  }
+
+  setTimeout(() => {
+    const loadingScreen = getEl('loadingScreen');
+    if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+      hideLoader();
+    }
+  }, 4000);
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ========== SCROLL PROGRESS BAR ==========
+  const progressBar = document.getElementById('scrollProgress');
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (winScroll / height) * 100;
+    if (progressBar) progressBar.style.width = scrolled + '%';
   });
 
-  // ===== HERO CANVAS (Performance Optimized) =====
+  // ========== DOT NAVIGATION ==========
+  const sections = document.querySelectorAll('section[id]');
+  const dots = document.querySelectorAll('.dot');
+  
+  function updateActiveDot() {
+    let current = '';
+    sections.forEach(sec => {
+      const secTop = sec.offsetTop - 150;
+      if (window.scrollY >= secTop) current = sec.getAttribute('id');
+    });
+    dots.forEach(dot => {
+      dot.classList.remove('active');
+      if (dot.getAttribute('href') === `#${current}`) dot.classList.add('active');
+    });
+  }
+  
+  window.addEventListener('scroll', updateActiveDot);
+  updateActiveDot();
+
+  // ========== TYPING ANIMATION ==========
+  const roles = ['Full Stack Developer', 'UI Engineer', 'Problem Solver', 'Freelancer'];
+  let roleIndex = 0, charIndex = 0;
+  const typingEl = document.getElementById('typingText');
+  
+  function typeRole() {
+    if (!typingEl) return;
+    if (charIndex < roles[roleIndex].length) {
+      typingEl.textContent += roles[roleIndex].charAt(charIndex);
+      charIndex++;
+      setTimeout(typeRole, 100);
+    } else {
+      setTimeout(() => {
+        let deleteInterval = setInterval(() => {
+          if (charIndex === 0) {
+            clearInterval(deleteInterval);
+            roleIndex = (roleIndex + 1) % roles.length;
+            typeRole();
+          } else {
+            typingEl.textContent = roles[roleIndex].substring(0, charIndex - 1);
+            charIndex--;
+          }
+        }, 50);
+      }, 2000);
+    }
+  }
+  if (typingEl) typeRole();
+
+  // ========== COUNT-UP ANIMATION ==========
+  const countups = document.querySelectorAll('.countup');
+  const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target);
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            el.textContent = target;
+            clearInterval(timer);
+          } else {
+            el.textContent = Math.floor(current);
+          }
+        }, 30);
+        countObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  countups.forEach(c => countObserver.observe(c));
+
+  // ========== AOD — ANIMATE ON DEMAND ENGINE ==========
+  const aodElements = document.querySelectorAll('[data-aod]');
+  const aodObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const delay = parseInt(el.dataset.aodDelay || 0);
+        setTimeout(() => el.classList.add('aod-visible'), delay);
+        aodObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.12 });
+  aodElements.forEach(el => aodObserver.observe(el));
+
+  // Legacy story-reveal still works
+  const storyBlocks = document.querySelectorAll('[data-story-reveal]');
+  const storyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('revealed');
+    });
+  }, { threshold: 0.2 });
+  storyBlocks.forEach(block => storyObserver.observe(block));
+
+  // ========== INTERACTIVE SKILL ORBIT — ENHANCED ==========
+  const skillsData = [
+    { name: 'HTML5',       desc: 'Semantic, accessible markup',      icon: '🌐', color: '#e44d26' },
+    { name: 'CSS3',        desc: 'Animations, Grid, Flexbox',        icon: '🎨', color: '#264de4' },
+    { name: 'JavaScript',  desc: 'ES6+, DOM, Async/Await',           icon: '⚡', color: '#f7df1e' },
+    { name: 'React',       desc: 'Hooks, State, Components',         icon: '⚛️',  color: '#61dafb' },
+    { name: 'Node.js',     desc: 'REST APIs, Express, Auth',         icon: '🟢', color: '#68a063' },
+    { name: 'Bootstrap',   desc: 'Rapid responsive layouts',         icon: '🅱️',  color: '#7952b3' },
+    { name: 'SQL',         desc: 'Queries, Joins, Data Analysis',    icon: '🗄️',  color: '#00758f' },
+    { name: 'Git',         desc: 'Version control, GitHub flows',    icon: '🔀', color: '#f05032' },
+    { name: 'WordPress',   desc: 'Themes, Plugins, CMS',             icon: '📝', color: '#21759b' }
+  ];
+
+  const orbitRing = document.getElementById('orbitRing');
+  if (orbitRing) {
+    const container = document.getElementById('orbitContainer');
+    let lines = [];
+
+    function getRadius() {
+      const w = container?.offsetWidth || 500;
+      return Math.min(210, w * 0.42);
+    }
+
+    // Draw SVG connector lines from center to each skill
+    function drawLines(r) {
+      lines.forEach(l => l.remove());
+      lines = [];
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible;';
+      const cx = (container?.offsetWidth || 500) / 2;
+      const cy = (container?.offsetHeight || 500) / 2;
+      skillsData.forEach((skill, i) => {
+        const angle = (i / skillsData.length) * Math.PI * 2 - Math.PI / 2;
+        const x2 = cx + Math.cos(angle) * r;
+        const y2 = cy + Math.sin(angle) * r;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', cx); line.setAttribute('y1', cy);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.setAttribute('stroke', skill.color || 'rgba(0,180,216,0.3)');
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('stroke-opacity', '0.25');
+        line.setAttribute('stroke-dasharray', '4 4');
+        svg.appendChild(line);
+        lines.push(line);
+      });
+      orbitRing.parentElement.appendChild(svg);
+      lines.push(svg);
+    }
+
+    function buildOrbit() {
+      // Clear existing
+      orbitRing.innerHTML = '';
+      const r = getRadius();
+      drawLines(r);
+
+      skillsData.forEach((skill, i) => {
+        const angle = (i / skillsData.length) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(angle) * r;
+        const y = Math.sin(angle) * r;
+
+        const div = document.createElement('div');
+        div.className = 'orbit-skill';
+        div.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        div.style.setProperty('--skill-color', skill.color || 'var(--cyan)');
+        div.innerHTML = `
+          <div class="orbit-skill-icon">${skill.icon}</div>
+          <strong>${skill.name}</strong>
+          <small>${skill.desc}</small>`;
+
+        // Hover: highlight matching line
+        div.addEventListener('mouseenter', () => {
+          const svgEl = orbitRing.parentElement.querySelector('svg');
+          if (svgEl) {
+            const lineEls = svgEl.querySelectorAll('line');
+            if (lineEls[i]) {
+              lineEls[i].setAttribute('stroke-opacity', '0.9');
+              lineEls[i].setAttribute('stroke-width', '2');
+            }
+          }
+        });
+        div.addEventListener('mouseleave', () => {
+          const svgEl = orbitRing.parentElement.querySelector('svg');
+          if (svgEl) {
+            const lineEls = svgEl.querySelectorAll('line');
+            if (lineEls[i]) {
+              lineEls[i].setAttribute('stroke-opacity', '0.25');
+              lineEls[i].setAttribute('stroke-width', '1');
+            }
+          }
+        });
+
+        orbitRing.appendChild(div);
+      });
+    }
+
+    buildOrbit();
+    setTimeout(buildOrbit, 300);
+    window.addEventListener('resize', () => setTimeout(buildOrbit, 100));
+  }
+
+  // ========== TIMELINE ANIMATION ==========
+  const timelineItems = document.querySelectorAll('[data-timeline]');
+  const timelineLine = document.getElementById('timelineLine');
+  
+  function updateTimeline() {
+    let visibleCount = 0;
+    timelineItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 100) {
+        item.classList.add('visible');
+        visibleCount++;
+      }
+    });
+    if (timelineLine) {
+      const percent = (visibleCount / timelineItems.length) * 100;
+      timelineLine.style.height = percent + '%';
+    }
+  }
+  
+  window.addEventListener('scroll', updateTimeline);
+  updateTimeline();
+
+  // ========== FLIP CARDS ==========
+  const flipCards = document.querySelectorAll('[data-flip]');
+  flipCards.forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+  });
+
+  // ========== MAGNETIC BUTTONS ==========
+  document.querySelectorAll('.magnetic-btn').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+    });
+    btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0,0)');
+  });
+
+  // ========== HERO CANVAS ==========
   const heroCanvas = document.getElementById('heroCanvas');
   if (heroCanvas) {
     const ctx = heroCanvas.getContext('2d');
-    let W, H, t = 0, animId = null, frameCount = 0;
-    let isVisible = true;
-
-    function resizeCanvas() {
+    let W, H, mouseX = 0.5, mouseY = 0.5;
+    
+    function resizeHero() {
       W = heroCanvas.width = heroCanvas.offsetWidth;
       H = heroCanvas.height = heroCanvas.offsetHeight;
     }
-
-    function waveColor(index, total, t, alpha) {
-      const paletteDeg = [190, 198, 208, 218, 200, 185, 20, 195];
-      const sat = [80, 75, 70, 68, 78, 82, 90, 72];
-      const lit = [65, 60, 55, 58, 62, 68, 60, 56];
-      const i = index % paletteDeg.length;
-      const hShift = Math.sin(t * 0.4 + index * 0.5) * 10;
-      return `hsla(${paletteDeg[i] + hShift}, ${sat[i]}%, ${lit[i]}%, ${alpha})`;
+    
+    window.addEventListener('resize', resizeHero);
+    resizeHero();
+    
+    const heroParent = heroCanvas.parentElement;
+    if (heroParent) {
+      heroParent.addEventListener('mousemove', (e) => {
+        const rect = heroCanvas.getBoundingClientRect();
+        mouseX = (e.clientX - rect.left) / W;
+        mouseY = (e.clientY - rect.top) / H;
+      });
     }
-
-    function drawScene() {
-      if (!ctx || !W || !H) return;
-      ctx.clearRect(0, 0, W, H);
-
-      const bg = ctx.createLinearGradient(0, 0, W * 0.7, H);
-      bg.addColorStop(0, '#020a14');
-      bg.addColorStop(0.5, '#050f1c');
-      bg.addColorStop(1, '#030810');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
-
-      const cx = W * 0.62, cy = H * 0.48;
-      const numRibbons = 10;
-
-      for (let r = numRibbons; r >= 0; r--) {
-        const progress = r / numRibbons;
-        const phaseOffset = progress * Math.PI * 2.8 + t * 0.45;
-        const radiusX = W * (0.18 + progress * 0.15);
-        const radiusY = H * (0.27 + progress * 0.1);
-        const thickness = 14 + Math.sin(progress * Math.PI) * 25;
-        const pts = [];
-
-        for (let i = 0; i <= 48; i++) {
-          const angle = (i / 48) * Math.PI * 2;
-          pts.push({
-            x: cx + Math.cos(angle) * radiusX + Math.cos(angle * 1.8 + phaseOffset * 0.7) * W * 0.04,
-            y: cy + Math.sin(angle) * radiusY + Math.sin(angle * 2.5 + phaseOffset) * H * 0.055
-          });
-        }
-
-        const alpha = 0.08 + Math.sin(progress * Math.PI) * 0.2;
-        const grad = ctx.createLinearGradient(cx - radiusX, cy, cx + radiusX, cy);
-        grad.addColorStop(0, waveColor(r, numRibbons, t, alpha * 0.5));
-        grad.addColorStop(0.3, waveColor(r + 2, numRibbons, t, alpha));
-        grad.addColorStop(0.6, waveColor(r + 4, numRibbons, t, alpha * 1.1));
-        grad.addColorStop(1, waveColor(r + 6, numRibbons, t, alpha * 0.5));
-
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-        ctx.closePath();
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = thickness;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
-      }
-
-      t += 0.045;
-    }
-
-    function loop() {
-      if (!isVisible || document.hidden) {
-        animId = null;
+    
+    function drawHero() {
+      if (!ctx || !W || !H) {
+        requestAnimationFrame(drawHero);
         return;
       }
-      frameCount++;
-      if (frameCount % 2 === 0) drawScene();
-      animId = requestAnimationFrame(loop);
+      ctx.clearRect(0, 0, W, H);
+      
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, '#020a14');
+      grad.addColorStop(0.5, '#050f1c');
+      grad.addColorStop(1, '#030810');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+      
+      for (let i = 0; i < 80; i++) {
+        ctx.beginPath();
+        const angle = Date.now() * 0.001 + i;
+        const x = (Math.sin(angle) * 0.5 + 0.5) * W;
+        const y = (Math.cos(angle * 0.7) * 0.5 + 0.5) * H;
+        const offsetX = (mouseX - 0.5) * 60;
+        const offsetY = (mouseY - 0.5) * 60;
+        ctx.arc(x + offsetX, y + offsetY, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,180,216,${0.2 + Math.sin(angle) * 0.1})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(drawHero);
     }
-
-    const heroObserver = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        isVisible = e.isIntersecting;
-        if (isVisible && !animId) loop();
-      });
-    }, { threshold: 0.1 });
-    heroObserver.observe(heroCanvas.parentElement);
-
-    resizeCanvas();
-    drawScene();
-
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      cancelAnimationFrame(animId);
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { resizeCanvas(); drawScene(); if (isVisible && !animId) loop(); }, 150);
-    });
+    drawHero();
   }
 
-  // ===== SECTION PULSE CANVASES (Performance Optimized) =====
-  (function () {
-    const SECTIONS = [
-      { selector: '.about-section', theme: 'light', corner: 'topRight' },
-      { selector: '.skills-section', theme: 'dark', corner: 'topLeft' },
-      { selector: '.experience-section', theme: 'light', corner: 'bottomRight' },
-      { selector: '.projects-section', theme: 'light', corner: 'bottomLeft' },
-      { selector: '.education-section', theme: 'dark', corner: 'topRight' },
-      { selector: '.certificates-section', theme: 'light', corner: 'center' },
-    ];
-
-    function darkColor(index, total, t, alpha) {
-      const hues = [190, 200, 210, 195, 185, 205];
-      const h = hues[index % hues.length];
-      return `hsla(${h + Math.sin(t * 0.3 + index) * 8}, 75%, 58%, ${alpha})`;
-    }
-
-    function lightColor(index, total, t, alpha) {
-      const hues = [200, 210, 195, 205, 215, 190];
-      const h = hues[index % hues.length];
-      return `hsla(${h + Math.sin(t * 0.3 + index) * 6}, 65%, 45%, ${alpha})`;
-    }
-
-    function initPulse(sectionEl, theme, corner) {
-      const canvas = sectionEl.querySelector('[data-section-canvas]');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let W, H, t = 0, animId = null, frameCount = 0, isVisible = false;
-
-      function resize() {
-        W = canvas.width = sectionEl.offsetWidth;
-        H = canvas.height = sectionEl.offsetHeight;
+  // ========== SECTION CANVAS BACKGROUNDS ==========
+  const sectionIds = ['about', 'skills', 'experience', 'education', 'certificates'];
+  
+  sectionIds.forEach(sectionId => {
+    const canvas = document.getElementById(`${sectionId}Canvas`);
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0;
+    
+    function resizeSection() {
+      const parent = canvas.parentElement;
+      if (parent) {
+        const rect = parent.getBoundingClientRect();
+        W = canvas.width = rect.width || parent.offsetWidth || window.innerWidth;
+        H = canvas.height = rect.height || parent.offsetHeight || 500;
       }
-
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          isVisible = e.isIntersecting;
-          if (isVisible && !animId) loop();
-        });
-      }, { threshold: 0.1 });
-      observer.observe(sectionEl);
-
-      function getOrigin() {
-        switch (corner) {
-          case 'topRight': return { cx: W * 0.88, cy: H * 0.12 };
-          case 'topLeft': return { cx: W * 0.12, cy: H * 0.12 };
-          case 'bottomRight': return { cx: W * 0.88, cy: H * 0.88 };
-          case 'bottomLeft': return { cx: W * 0.12, cy: H * 0.88 };
-          default: return { cx: W * 0.50, cy: H * 0.50 };
+    }
+    
+    window.addEventListener('resize', resizeSection);
+    // Try immediately, then retry after layout settles
+    resizeSection();
+    setTimeout(resizeSection, 200);
+    setTimeout(resizeSection, 800);
+    
+    let time = 0;
+    const isLight = sectionId === 'about' || sectionId === 'experience' || sectionId === 'certificates';
+    
+    function drawSection() {
+      // Re-check size if still 0
+      if (!W || !H) { resizeSection(); }
+      if (!ctx || !W || !H) {
+        requestAnimationFrame(drawSection);
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      
+      ctx.fillStyle = isLight ? 'rgba(248, 250, 252, 0.9)' : 'rgba(6, 13, 22, 0.9)';
+      ctx.fillRect(0, 0, W, H);
+      
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath();
+        const yOffset = Math.sin(time * 0.5 + i) * 25;
+        for (let x = 0; x <= W; x += 20) {
+          const y = H * (0.3 + i * 0.1) + Math.sin(x * 0.008 + time + i) * 35 + yOffset;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
+        ctx.strokeStyle = isLight
+          ? `rgba(0, 119, 182, ${0.06 + i * 0.02})`
+          : `rgba(0, 180, 216, ${0.08 + i * 0.02})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
       }
-
-      function draw() {
-        if (!ctx || !W || !H) return;
-        ctx.clearRect(0, 0, W, H);
-        const { cx, cy } = getOrigin();
-        const numRibbons = 8;
-        const isLight = theme === 'light';
-        const colorFn = isLight ? lightColor : darkColor;
-
-        for (let r = numRibbons; r >= 0; r--) {
-          const progress = r / numRibbons;
-          const phaseOffset = progress * Math.PI * 2.6 + t * 0.42;
-          const radiusX = W * (0.12 + progress * 0.2);
-          const radiusY = H * (0.16 + progress * 0.12);
-          const thickness = 8 + Math.sin(progress * Math.PI) * 18;
-          const pts = [];
-
-          for (let i = 0; i <= 40; i++) {
-            const angle = (i / 40) * Math.PI * 2;
-            pts.push({
-              x: cx + Math.cos(angle) * radiusX + Math.cos(angle * 1.6 + phaseOffset * 0.6) * W * 0.03,
-              y: cy + Math.sin(angle) * radiusY + Math.sin(angle * 2.2 + phaseOffset) * H * 0.04,
-            });
-          }
-
-          const baseAlpha = isLight ? 0.03 + Math.sin(progress * Math.PI) * 0.07 : 0.06 + Math.sin(progress * Math.PI) * 0.18;
-          const grad = ctx.createLinearGradient(cx - radiusX, cy, cx + radiusX, cy);
-          grad.addColorStop(0, colorFn(r, numRibbons, t, baseAlpha * 0.4));
-          grad.addColorStop(0.5, colorFn(r + 2, numRibbons, t, baseAlpha));
-          grad.addColorStop(1, colorFn(r + 4, numRibbons, t, baseAlpha * 0.4));
-
-          ctx.beginPath();
-          ctx.moveTo(pts[0].x, pts[0].y);
-          for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-          ctx.closePath();
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = thickness;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          ctx.stroke();
-        }
-        t += 0.08;
-      }
-
-      function loop() {
-        if (!isVisible || document.hidden) {
-          animId = null;
-          return;
-        }
-        frameCount++;
-        if (frameCount % 2 === 0) draw();
-        animId = requestAnimationFrame(loop);
-      }
-
-      let resizeTimer;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(resize, 150);
-      });
-
-      resize();
+      
+      time += 0.015;
+      requestAnimationFrame(drawSection);
     }
+    
+    drawSection();
+  });
 
-    SECTIONS.forEach(({ selector, theme, corner }) => {
-      const el = document.querySelector(selector);
-      if (el) initPulse(el, theme, corner);
-    });
-  })();
-
-  // ===== AOD SCROLL ANIMATION SYSTEM (Performance Optimized) =====
-  const aodEls = document.querySelectorAll('[data-aod]');
-  const aodObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const el = entry.target;
-      const delay = parseInt(el.dataset.aodDelay || 0);
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          el.classList.add('aod-in');
-          el.classList.remove('aod-out');
-        }, delay);
-      } else {
-        el.classList.remove('aod-in');
-        el.classList.add('aod-out');
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-  aodEls.forEach(el => aodObserver.observe(el));
-
-  // ===== NAVBAR SCROLL =====
-  const navbar = document.getElementById('navbar');
-  function onScroll() {
-    if (window.scrollY > 100) navbar.classList.add('scrolled');
-    else navbar.classList.remove('scrolled');
-
-    let current = '';
-    document.querySelectorAll('section[id]').forEach(sec => {
-      if (scrollY >= sec.offsetTop - 200) current = sec.getAttribute('id');
-    });
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === `#${current}`) a.classList.add('active');
-    });
-  }
-  window.addEventListener('scroll', throttle(onScroll, 80), { passive: true });
-
-  // ===== HAMBURGER =====
-  const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('navLinks');
-  if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
-    navLinks.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => navLinks.classList.remove('active'));
-    });
-  }
-
-  // ===== CONTACT FORM =====
-  const contactForm = document.getElementById('contactForm');
-  if (contactForm) {
-    contactForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const name = document.getElementById('name')?.value;
-      const email = document.getElementById('email')?.value;
-      const message = document.getElementById('message')?.value;
-      if (name && email && message) {
-        showAlert("Thanks for your message! I'll get back to you soon.", 'success');
-        contactForm.reset();
-      } else {
-        showAlert('Please fill in all fields.', 'error');
-      }
-    });
-  }
-
-  // ===== CHATBOX =====
+  // ========== AI CHAT ASSISTANT — Claude-powered ==========
   const chatButton = document.getElementById('chatButton');
   const chatContainer = document.getElementById('chatContainer');
   const chatClose = document.getElementById('chatClose');
@@ -309,114 +407,322 @@ document.addEventListener('DOMContentLoaded', function () {
   const chatSend = document.getElementById('chatSend');
   const chatMessages = document.getElementById('chatMessages');
   const typingIndicator = document.getElementById('typingIndicator');
-  const WHATSAPP_NUMBER = '27720786569';
 
-  if (chatButton && chatContainer && chatClose && chatInput && chatSend && chatMessages && typingIndicator) {
+    const ALEX_CONTEXT = `You are Alex Sello's personal AI assistant, embedded in his interactive CV website. Your job is to answer ANY question a visitor, recruiter, or potential client might ask about Alex — naturally, warmly, and confidently, as if you know him personally.
 
-    function addMessage(text, type) {
-      const div = document.createElement('div');
-      div.classList.add('message', type);
-      const now = new Date();
-      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      div.innerHTML = `<div class="message-content">${text}</div><div class="message-time">${time}</div>`;
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+TONE: Conversational, friendly, enthusiastic about Alex's work. Never robotic. Use natural language, not bullet lists unless specifically listing things.
+
+RESPONSE LENGTH: Keep it concise — 2 to 5 sentences is ideal. If someone asks a simple factual question like "what's his phone number", just give the answer directly. Don't over-explain.
+
+IMPORTANT — HANDLE THESE QUESTION TYPES NATURALLY:
+- "Who is Alex?" / "Tell me about Alex" → Give a warm 3-4 sentence intro covering who he is, what he does, where he's from, and what makes him stand out.
+- "What is Alex's last name?" → His last name is Sello. Full name: Alex Thabo Sello.
+- "What is his phone number?" / "How do I call him?" → 072 078 6569
+- "What is his email?" → atsello4@gmail.com
+- "Where is he from?" / "Where does he live?" → Pretoria, South Africa (specifically Ga-Rankuwa)
+- "What social media is he on?" / "Where can I find him online?" → GitHub (github.com/Alex-Sello7) and LinkedIn (linkedin.com/in/alex-sello). He's most active on GitHub.
+- "How good is he?" / "Is he skilled?" / "How good is his design?" / "Can he build good websites?" → Speak confidently and specifically about his skills, highlight real evidence like projects delivered, distinctions earned, and the quality of this very CV site as proof.
+- "Is he available?" / "Can I hire him?" → Yes, he's actively open to freelance and full-time opportunities.
+- "What does he charge?" / "How much does he cost?" → That's best discussed directly with Alex — contact him at atsello4@gmail.com or 072 078 6569.
+- "How old is he?" → Born 7 April 1995, so he's 30 years old.
+- Questions about his CV or this website → This site itself is one of his projects — built entirely from scratch with Vanilla JS, Canvas API, CSS animations, and no frameworks. It's proof of his frontend ability.
+
+EVERYTHING YOU KNOW ABOUT ALEX:
+
+IDENTITY:
+- Full name: Alex Thabo Sello
+- Date of birth: 7 April 1995 (age 30)
+- Location: Pretoria, Ga-Rankuwa, South Africa
+- Student number at UNISA: 6231-625-7
+
+CONTACT:
+- Phone: 072 078 6569
+- Email: atsello4@gmail.com
+- GitHub: github.com/Alex-Sello7
+- LinkedIn: linkedin.com/in/alex-sello
+
+WHAT HE DOES:
+Alex is a Front End Developer and final-year IT student who builds responsive, production-ready web interfaces. He's particularly strong at translating client requirements into clean, maintainable code. He works independently, manages multiple projects, and consistently meets deadlines without needing hand-holding.
+
+HIS STRENGTHS & QUALITY:
+- His code is clean, modular, and structured — he builds reusable component libraries, not messy spaghetti code
+- He has a genuine eye for design — spacing, typography, layout hierarchy, and interaction flow are things he actively refines
+- He does mobile-first design with systematic cross-browser testing before every deployment
+- He's delivered 12+ websites for real clients, which means he knows how to handle real-world requirements, feedback, and revisions
+- Several of his UNISA modules were passed with distinction — showing academic rigour alongside practical skills
+- This interactive CV website itself is evidence of his ability: Canvas API animations, a skill orbit, scroll-triggered storytelling, a working AI assistant, case study modals, and a recruiter mode — all in Vanilla JS with zero frameworks
+
+TECHNICAL SKILLS:
+- Frontend: HTML5, CSS3, JavaScript ES6+, Bootstrap, React (basics — component structure, hooks, state)
+- Backend: Node.js, Express, REST APIs
+- Databases: SQL (certified), basic MongoDB
+- Tools: Git & GitHub, VS Code, WordPress (certified), SQL Server Management Studio, Microsoft 365
+- Practices: Responsive/mobile-first design, reusable UI components, cross-browser compatibility testing, clean code & maintainability, structured Git workflows, Agile basics
+
+EXPERIENCE:
+1. Freelance Web Developer — Self-employed (February 2024 – Present)
+   - Delivered 12+ responsive websites for small businesses
+   - Increased cross-device reliability with mobile-first design and cross-browser testing
+   - Built reusable UI component libraries, reducing revision cycles
+   - Managed multiple concurrent projects independently, meeting deadlines
+   - Decreased revision cycles by carefully interpreting stakeholder scope documents
+   - Enhanced UX through spacing, typography, layout hierarchy, and interaction flow
+   - Tech stack: HTML5, CSS3, JavaScript ES6+, Bootstrap, Git, WordPress
+
+2. Sales Assistant — Street Fever (October 2018 – December 2019)
+   - Fast-paced retail: client communication, transaction handling, stock management
+   - Developed strong communication and problem-solving skills
+
+EDUCATION:
+1. Diploma in Information Technology — UNISA (2022 – Present)
+   - 216 out of 360 credits completed — NQF Level 6
+   - Modules passed with DISTINCTION: Business Management (80%), Ethical ICT (76%), Network Technical Skills (75%), Interactive Programming (82%)
+   - All other modules: Web Design, Databases, Systems Analysis, Object-Oriented Analysis, Business Informatics I/II/III, GUI Programming, Workstation Skills
+   - Qualification is in progress — expected to complete remaining 144 credits
+
+2. National Senior Certificate — Modiri Secondary School (December 2013)
+   - Subjects: Mathematics, Physical Science, Life Science, Geography
+
+CERTIFICATIONS (all verified):
+- Full Stack Web Development Bootcamp — Udemy (HTML, CSS, JS, React, Node, Express, MongoDB)
+- Full Stack Web Development — FNB App Academy (industry-aligned programme)
+- SQL for Data Analysis — Simplilearn
+- WordPress Development — Simplilearn
+
+PROJECTS:
+1. Cascade Creations — https://alex-sello7.github.io/CascadeMainWebsite/
+   - Responsive single-page business website built from scratch
+   - Reusable UI sections, mobile-first, consistent design patterns
+
+2. Seamless Travel Revamp — https://alex-sello7.github.io/Seamless-Travel/
+   - Full layout redesign, improved visual hierarchy and usability
+   - Cross-browser tested, structured CSS organisation
+
+3. Interactive Storytelling CV (this site — the one you're on right now)
+   - Built entirely from scratch: Canvas API animations, skill orbit with SVG connector lines
+   - Scroll-triggered AOD animations, case study modals, recruiter mode, AI assistant
+   - Zero frameworks — pure HTML, CSS, Vanilla JavaScript
+
+PERSONALITY & WORK STYLE:
+- Self-driven and works well independently without supervision
+- Detail-oriented — sweats the small stuff like pixel spacing and interaction timing
+- Communicates clearly with clients and interprets briefs carefully before building
+- Passionate about the craft — this CV site is something he built in his own time to stand out
+
+AVAILABILITY: Actively open to freelance projects and full-time employment opportunities.
+
+If asked something genuinely not covered above (like his hobbies or personal opinions), be honest that you don't have that info and suggest they reach out to Alex directly via email or phone.`;
+
+  const chatHistory = [];
+
+  function addMessage(text, type) {
+    const div = document.createElement('div');
+    div.classList.add('message', type);
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = `<div class="message-content">${text}</div><div class="message-time">${time}</div>`;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function getAIResponse(userMessage) {
+    chatHistory.push({ role: 'user', content: userMessage });
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: ALEX_CONTEXT,
+          messages: chatHistory
+        })
+      });
+
+      const data = await response.json();
+      const reply = data.content?.[0]?.text || "Sorry, I couldn't get a response. Try again!";
+      chatHistory.push({ role: 'assistant', content: reply });
+      return reply;
+
+    } catch (err) {
+      // Fallback keyword responses if API is unavailable
+      const lower = userMessage.toLowerCase();
+
+      // Identity & personal
+      if (lower.includes('who is') || lower.includes('tell me about') || lower.includes('introduce'))
+        return "Alex Thabo Sello is a Front End Developer and IT student from Pretoria, South Africa. He builds responsive, production-ready websites and has delivered 12+ projects for real clients. He's currently studying for a Diploma in IT at UNISA and is open to freelance and full-time work.";
+      if (lower.includes('last name') || lower.includes('surname') || lower.includes('full name'))
+        return "His full name is Alex Thabo Sello. Last name: Sello.";
+      if (lower.includes('age') || lower.includes('born') || lower.includes('old'))
+        return "Alex was born on 7 April 1995, making him 30 years old.";
+      if (lower.includes('where') && (lower.includes('from') || lower.includes('live') || lower.includes('based')))
+        return "Alex is based in Pretoria, South Africa — specifically Ga-Rankuwa.";
+
+      // Contact
+      if (lower.includes('phone') || lower.includes('call') || lower.includes('number'))
+        return "Alex's phone number is 072 078 6569.";
+      if (lower.includes('email') || lower.includes('mail'))
+        return "You can email Alex at atsello4@gmail.com.";
+      if (lower.includes('social') || lower.includes('github') || lower.includes('linkedin') || lower.includes('find him') || lower.includes('online'))
+        return "You can find Alex on GitHub at github.com/Alex-Sello7 and on LinkedIn at linkedin.com/in/alex-sello. He's most active on GitHub where you can browse his projects.";
+      if (lower.includes('contact') || lower.includes('reach') || lower.includes('hire') || lower.includes('available'))
+        return "Alex is actively available for freelance and full-time opportunities! Reach him at 072 078 6569 or atsello4@gmail.com.";
+
+      // Quality / skills
+      if (lower.includes('how good') || lower.includes('is he good') || lower.includes('skill') || lower.includes('capable') || lower.includes('design') || lower.includes('developer'))
+        return "Alex has a strong eye for design and writes clean, modular code. He's delivered 12+ websites for real clients, passed multiple UNISA modules with distinction, and built this entire interactive CV from scratch in Vanilla JS — no frameworks. That's a pretty solid answer right there.";
+      if (lower.includes('tech') || lower.includes('stack') || lower.includes('language'))
+        return "Alex works with HTML5, CSS3, JavaScript ES6+, Bootstrap, React (basics), Node.js, SQL, Git, and WordPress. He's also comfortable with systems analysis, database design, and business informatics.";
+
+      // Work & projects
+      if (lower.includes('project') || lower.includes('portfolio') || lower.includes('built') || lower.includes('work'))
+        return "Alex has built 12+ projects including Cascade Creations (business website), Seamless Travel (layout revamp), and this interactive CV. Check the Projects section to see case studies!";
+      if (lower.includes('experience') || lower.includes('job') || lower.includes('career'))
+        return "Alex has been freelancing as a web developer since February 2024, delivering responsive sites for small businesses. Before that he worked in sales at Street Fever, where he developed strong communication and client-handling skills.";
+      if (lower.includes('education') || lower.includes('study') || lower.includes('degree') || lower.includes('unisa'))
+        return "Alex is studying for a Diploma in IT at UNISA with 216 of 360 credits completed. Several modules were passed with distinction. He also completed his NSC at Modiri Secondary School in 2013.";
+      if (lower.includes('certif'))
+        return "Alex holds 4 certifications: Full Stack Bootcamp (Udemy), Full Stack Web Dev (FNB App Academy), SQL for Data Analysis (Simplilearn), and WordPress Development (Simplilearn).";
+
+      return "I'm Alex's AI assistant! You can ask me anything — who he is, his contact details, his skills, projects, social media, or whether he's available for work.";
     }
+  }
 
-    function sendMessage() {
-      const message = chatInput.value.trim();
-      if (!message) return;
-      addMessage(message, 'sent');
-      chatInput.value = '';
-      typingIndicator.classList.add('active');
-      chatInput.disabled = true;
-      chatSend.disabled = true;
-      setTimeout(() => {
-        typingIndicator.classList.remove('active');
-        addMessage("Thanks for your message! I'll get back to you shortly. 👋", 'received');
-        chatInput.disabled = false;
-        chatSend.disabled = false;
-        chatInput.focus();
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
-      }, 1500);
-    }
+  async function sendMessage() {
+    const msg = chatInput.value.trim();
+    if (!msg) return;
+    addMessage(msg, 'sent');
+    chatInput.value = '';
+    typingIndicator.classList.add('active');
+    chatInput.disabled = true;
+    chatSend.disabled = true;
 
-    chatButton.addEventListener('click', e => {
-      e.stopPropagation();
+    const reply = await getAIResponse(msg);
+    typingIndicator.classList.remove('active');
+    addMessage(reply, 'received');
+    chatInput.disabled = false;
+    chatSend.disabled = false;
+    chatInput.focus();
+  }
+
+  if (chatButton && chatContainer) {
+    chatButton.addEventListener('click', () => {
       chatContainer.classList.add('active');
-      setTimeout(() => chatInput.focus(), 300);
+      setTimeout(() => chatInput?.focus(), 300);
     });
-    chatClose.addEventListener('click', e => { e.stopPropagation(); chatContainer.classList.remove('active'); });
-    chatSend.addEventListener('click', e => { e.stopPropagation(); sendMessage(); });
-    chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
-    document.addEventListener('click', e => {
+    chatClose?.addEventListener('click', () => chatContainer.classList.remove('active'));
+    chatSend?.addEventListener('click', sendMessage);
+    chatInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    document.addEventListener('click', (e) => {
       if (chatContainer.classList.contains('active') &&
-        !chatContainer.contains(e.target) && !chatButton.contains(e.target)) {
+          !chatContainer.contains(e.target) &&
+          !chatButton.contains(e.target)) {
         chatContainer.classList.remove('active');
       }
     });
-    chatContainer.addEventListener('click', e => e.stopPropagation());
-
-    setTimeout(() => {
-      if (chatMessages.children.length === 1) {
-        addMessage("Please note, this feature is still in progress. I'll be adding more functionality soon!", 'received');
-      }
-    }, 1000);
   }
 
-  // ===== CURRENT YEAR =====
+
+  // ========== CASE STUDY MODAL ==========
+  const modal = document.getElementById('caseStudyModal');
+  const modalClose = document.getElementById('modalClose');
+
+  function openModal(card) {
+    const title   = card.dataset.projectTitle;
+    const problem = card.dataset.projectProblem;
+    const sol     = card.dataset.projectSolution;
+    const stack   = card.dataset.projectStack;
+    const url     = card.dataset.projectUrl;
+    const color   = card.dataset.projectColor || 'var(--cyan)';
+
+    document.getElementById('modalTitle').textContent   = title;
+    document.getElementById('modalProblem').textContent = problem;
+    document.getElementById('modalSolution').textContent = sol;
+    document.getElementById('modalAccent').style.background = color;
+
+    const stackEl = document.getElementById('modalStack');
+    stackEl.innerHTML = '';
+    stack.split(',').forEach(t => {
+      const span = document.createElement('span');
+      span.textContent = t.trim();
+      stackEl.appendChild(span);
+    });
+
+    const liveLink = document.getElementById('modalLiveLink');
+    liveLink.href = url;
+    liveLink.style.display = url === '#' ? 'none' : 'inline-flex';
+
+    modal?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal?.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  // Open on case study button click
+  document.querySelectorAll('.project-case-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal(btn.closest('.project-card'));
+    });
+  });
+
+  // Also open on card click (not on link clicks)
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('.project-link-btn') && !e.target.closest('.project-case-btn')) {
+        openModal(card);
+      }
+    });
+  });
+
+  modalClose?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  // ========== RECRUITER MODE ==========
+  const recruiterBtn  = document.getElementById('recruiterBtn');
+  const recruiterOverlay = document.getElementById('recruiterOverlay');
+  const recruiterClose   = document.getElementById('recruiterClose');
+
+  recruiterBtn?.addEventListener('click', () => {
+    recruiterOverlay?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  recruiterClose?.addEventListener('click', () => {
+    recruiterOverlay?.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
+
+  recruiterOverlay?.addEventListener('click', (e) => {
+    if (e.target === recruiterOverlay) {
+      recruiterOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // ========== NAVBAR SCROLL ==========
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+  });
+
+  // ========== HAMBURGER MENU ==========
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger?.addEventListener('click', () => navLinks?.classList.toggle('active'));
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => navLinks?.classList.remove('active'));
+  });
+
+  // ========== CURRENT YEAR ==========
   const yearEl = document.getElementById('currentYear');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // ===== ONLINE/OFFLINE =====
-  window.addEventListener('online', () => showAlert('You are back online!', 'success'));
-  window.addEventListener('offline', () => showAlert('You are offline. Some features may not be available.', 'error'));
 });
-
-// ===== UTILITIES =====
-function throttle(func, limit) {
-  let inThrottle;
-  return function () {
-    if (!inThrottle) {
-      func.apply(this, arguments);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
-  };
-}
-
-window.showAlert = function (message, type) {
-  const existing = document.querySelector('.alert');
-  if (existing) existing.remove();
-  const alertEl = document.createElement('div');
-  alertEl.className = `alert alert-${type}`;
-  alertEl.style.display = 'flex';
-  alertEl.innerHTML = `
-        <div class="alert-content">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-            <span>${message}</span>
-        </div>
-        <button class="alert-close" aria-label="Close"><i class="fas fa-times"></i></button>`;
-  document.body.appendChild(alertEl);
-  setTimeout(() => alertEl.classList.add('show'), 10);
-  alertEl.querySelector('.alert-close').addEventListener('click', () => {
-    alertEl.classList.remove('show');
-    setTimeout(() => alertEl.remove(), 300);
-  });
-  setTimeout(() => {
-    if (alertEl.parentNode) { alertEl.classList.remove('show'); setTimeout(() => alertEl.remove(), 300); }
-  }, 5000);
-};
-
-window.closeAlert = function () {
-  const alertEl = document.getElementById('alert');
-  if (alertEl) {
-    alertEl.classList.remove('show');
-    setTimeout(() => alertEl.style.display = 'none', 300);
-  }
-};
-
-window.addEventListener('error', e => {
-  if (e.message && e.message.includes('ResizeObserver')) e.preventDefault();
-});
-window.addEventListener('unhandledrejection', e => e.preventDefault());
