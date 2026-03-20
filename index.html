@@ -3,122 +3,100 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alex Sello | Frontend Developer CV</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Alex Sello | Full Stack Web Developer</title>
 
-  <!-- Fonts -->
+  <!-- Preconnect to critical origins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
+  
+  <!-- Optimized font loading -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 (lightweight) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- AOS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <link rel="shortcut icon" href="imgs/favi.png" type="image/x-icon">
 
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <!-- Minimalist Loader with Bouncing Bubbles -->
-  <div class="loader" id="loader">
-    <div class="loader-content">
-      <div class="loader-brand">Alex Sello</div>
-      <div class="loader-bubbles">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
+
+  <!-- ══════════ LOADING SCREEN ══════════ -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-wrap">
+      <div class="loader-logo">
+        <div class="loader-orbit"></div>
       </div>
+      <div class="loader-brand">
+        <div class="loader-name">Alex Sello</div>
+        <div class="loader-tagline">Full Stack Web Developer</div>
+      </div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loaderBar"></div>
+      </div>
+      <div class="loader-pct" id="loaderPct">0%</div>
     </div>
   </div>
-  <!-- Navigation -->
+
+  <!-- ══════════ NAVIGATION ══════════ -->
   <nav class="navbar" id="navbar">
     <div class="container">
       <a href="#hero" class="navbar-brand">Alex</a>
       <div class="hamburger" id="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </div>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
-        <li><a href="#projects">Projects</a></li>
         <li><a href="#education">Education</a></li>
         <li><a href="#certificates">Certificates</a></li>
         <li><a href="#contact">Contact</a></li>
-        <!-- Working CV download link -->
-        <li><a href="cv/AlexSelloCV.pdf" target="_blank" download class="cv-link"><i class="fas fa-file-pdf"></i> CV</a>
-        </li>
+        <li><a href="https://alex-sello7.github.io/CascadeCreationsPortfolio.com/#alex" target="_blank" class="nav-cta"><i class="fas fa-file-pdf"></i> Portfolio</a></li>
+        <li><a href="https://alex-sello7.github.io/CascadeMainWebsite/#home" target="_blank" class="nav-cta"><i class="fas fa-code"></i> Main Site</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="hero-bg"></div>
-    <div class="container">
-      <div class="hero-content" data-aos="fade-up">
-        <div class="hero-greeting">Hello, I am</div>
+  <!-- ══════════ HERO ══════════ -->
+  <section class="hero-section" id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-overlay">
+      <div class="hero-content" data-aod data-aod-delay="0">
         <h1 class="hero-title">
-          Alex<br>
-          <span class="highlight">Sello</span>
+          Alex<br><span class="highlight">Sello</span>
         </h1>
-        <p class="hero-text">Frontend Developer & IT student specializing in responsive, production-ready web interfaces
-          with clean, maintainable code.</p>
+        <p class="hero-text">Full Stack Web Developer &amp; IT student specializing in responsive, production-ready web applications — from pixel-perfect UIs to backend logic — with clean, maintainable code.</p>
         <div class="hero-buttons">
-          <a href="#projects" class="btn btn-primary">View My Work <i class="fas fa-arrow-right"></i></a>
-
-          <a href="cv/AlexSelloCV.pdf" target="_blank" download class="btn btn-outline"><i class="fas fa-download"></i>
-            Download CV</a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-number">2+</div>
-            <div class="stat-label">Years Learning</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">10+</div>
-            <div class="stat-label">Projects</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">5+</div>
-            <div class="stat-label">Certifications</div>
-          </div>
+          <a href="https://alex-sello7.github.io/CascadeCreationsPortfolio.com/#alex" class="btn btn-primary">View My Work <i class="fas fa-arrow-right"></i></a>
+          <a href="cv/AlexSelloCV.pdf" target="_blank" class="btn btn-outline"><i class="fas fa-download"></i> Download CV</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- About Section -->
-  <section class="about" id="about">
+  <!-- ══════════ ABOUT ══════════ -->
+  <section class="about-section" id="about">
+    <canvas class="section-pulse-canvas" data-section-canvas></canvas>
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">About Me</span>
-        <h2 class="section-title">Detail-oriented Frontend Developer</h2>
-        <p class="section-description">Based in Pretoria, South Africa</p>
+      <div class="section-header">
+        <span class="section-subtitle" data-aod data-aod-delay="0">About Me</span>
+        <h2 class="section-title" data-aod data-aod-delay="80">Full Stack Web Developer</h2>
+        <p class="section-description" data-aod data-aod-delay="150">Based in Pretoria, South Africa</p>
       </div>
 
       <div class="about-grid">
-        <div class="about-text" data-aos="fade-right">
+        <div class="about-text" data-aod data-aod-delay="200" data-aod-dir="left">
           <h3>Professional Summary</h3>
-          <p>Detail-oriented Front End Developer and final-year Information Technology student with hands-on experience
-            building responsive, production-ready web interfaces using HTML5, CSS, and modern JavaScript (ES6+).</p>
+          <p>Detail-oriented Full Stack Web Developer and final-year Information Technology student with hands-on experience building responsive, production-ready web applications using HTML5, CSS3, modern JavaScript (ES6+), and Node.js.</p>
 
           <div class="about-highlight">
-            <p>Strong foundation in template-based development, reusable component architecture, and structured version
-              control workflows using Git. Experienced in translating structured scopes and stakeholder requirements
-              into clean, maintainable, and scalable frontend solutions.</p>
+            <p>Strong foundation in template-based development, reusable component architecture, and structured version control workflows using Git. Experienced in translating structured scopes and stakeholder requirements into clean, maintainable, and scalable full stack solutions.</p>
           </div>
 
-          <p>Passionate about user experience, accessibility, cross-browser compatibility, and delivering high-quality
-            digital interfaces that perform consistently across devices. Comfortable working independently in remote
-            environments while managing multiple projects and meeting deadlines.</p>
+          <p>Passionate about user experience, accessibility, cross-browser compatibility, and delivering high-quality digital interfaces that perform consistently across devices. Comfortable working independently in remote environments while managing multiple projects and meeting deadlines.</p>
 
           <div class="personal-info">
             <div class="info-item">
@@ -136,23 +114,23 @@
               </div>
             </div>
             <div class="info-item">
-              <i class="fas fa-envelope"></i>
-              <div class="info-item-content">
-                <h4>Email</h4>
-                <p>atsello4@gmail.com</p>
-              </div>
-            </div>
-            <div class="info-item">
               <i class="fab fa-github"></i>
               <div class="info-item-content">
                 <h4>GitHub</h4>
-                <p>github.com/Alex-Sello7</p>
+                <p><a href="https://github.com/Alex-Sello7">github.com/alex-sello7</a></p>
+              </div>
+            </div>
+            <div class="info-item">
+              <i class="fab fa-linkedin"></i>
+              <div class="info-item-content">
+                <h4>LinkedIn</h4>
+                <p>linkedin.com/in/alex-sello</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="about-highlights" data-aos="fade-left">
+        <div class="about-highlights" data-aod data-aod-delay="300" data-aod-dir="right">
           <div class="skill-card" style="margin-bottom: 1.5rem;">
             <div class="skill-header">
               <i class="fas fa-code"></i>
@@ -173,16 +151,16 @@
           <div class="skill-card">
             <div class="skill-header">
               <i class="fas fa-tools"></i>
-              <h4>IT Support & Infrastructure</h4>
+              <h4>IT Support &amp; Infrastructure</h4>
             </div>
             <ul class="skill-list">
-              <li><i class="fas fa-check-circle"></i> First-line troubleshooting (software & user-related issues)</li>
+              <li><i class="fas fa-check-circle"></i> First-line troubleshooting (software &amp; user-related issues)</li>
               <li><i class="fas fa-check-circle"></i> Remote user support</li>
               <li><i class="fas fa-check-circle"></i> Basic networking concepts (DNS, DHCP, IP addressing)</li>
-              <li><i class="fas fa-check-circle"></i> Hardware & peripheral setup</li>
-              <li><i class="fas fa-check-circle"></i> System configuration & testing</li>
-              <li><i class="fas fa-check-circle"></i> Issue documentation & resolution tracking</li>
-              <li><i class="fas fa-check-circle"></i> Logical problem-solving & root cause analysis</li>
+              <li><i class="fas fa-check-circle"></i> Hardware &amp; peripheral setup</li>
+              <li><i class="fas fa-check-circle"></i> System configuration &amp; testing</li>
+              <li><i class="fas fa-check-circle"></i> Issue documentation &amp; resolution tracking</li>
+              <li><i class="fas fa-check-circle"></i> Logical problem-solving &amp; root cause analysis</li>
             </ul>
           </div>
         </div>
@@ -190,36 +168,30 @@
     </div>
   </section>
 
-  <!-- Skills Section -->
-  <section class="skills" id="skills">
+  <!-- ══════════ SKILLS ══════════ -->
+  <section class="skills-section" id="skills">
+    <canvas class="section-pulse-canvas" data-section-canvas></canvas>
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">Technical Skills</span>
-        <h2 class="section-title">My Development Toolkit</h2>
-        <p class="section-description">Comprehensive skills from frontend development to IT support</p>
+      <div class="section-header">
+        <span class="section-subtitle" data-aod data-aod-delay="0">Technical Skills</span>
+        <h2 class="section-title" data-aod data-aod-delay="80">My Full Stack Toolkit</h2>
+        <p class="section-description" data-aod data-aod-delay="150">Comprehensive skills across the full stack — from UI to server to database</p>
       </div>
 
-      <div class="skills-category" data-aos="fade-up">
-        <h3><i class="fas fa-laptop-code"></i> Frontend Development</h3>
+      <div class="skills-category" data-aod data-aod-delay="200">
+        <h3><i class="fas fa-laptop-code"></i> Full Stack Development</h3>
         <div class="skills-grid">
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-html5"></i>
-              <h4>HTML5</h4>
-            </div>
+            <div class="skill-header"><i class="fab fa-html5"></i><h4>HTML5</h4></div>
             <div class="skill-items">
               <span class="skill-tag">Semantic Markup</span>
               <span class="skill-tag">Accessibility</span>
               <span class="skill-tag">SEO-friendly</span>
-              <span class="skill-tag">Forms & Validation</span>
+              <span class="skill-tag">Forms &amp; Validation</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-css3-alt"></i>
-              <h4>CSS3</h4>
-            </div>
+            <div class="skill-header"><i class="fab fa-css3-alt"></i><h4>CSS3</h4></div>
             <div class="skill-items">
               <span class="skill-tag">Flexbox</span>
               <span class="skill-tag">Grid</span>
@@ -228,12 +200,8 @@
               <span class="skill-tag">Custom Properties</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-js"></i>
-              <h4>JavaScript (ES6+)</h4>
-            </div>
+            <div class="skill-header"><i class="fab fa-js"></i><h4>JavaScript (ES6+)</h4></div>
             <div class="skill-items">
               <span class="skill-tag">DOM Manipulation</span>
               <span class="skill-tag">Async/Await</span>
@@ -242,12 +210,26 @@
               <span class="skill-tag">Fetch API</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-bootstrap"></i>
-              <h4>Bootstrap</h4>
+            <div class="skill-header"><i class="fab fa-node-js"></i><h4>Node.js &amp; Express</h4></div>
+            <div class="skill-items">
+              <span class="skill-tag">REST APIs</span>
+              <span class="skill-tag">Express.js</span>
+              <span class="skill-tag">Middleware</span>
+              <span class="skill-tag">Server-side Logic</span>
             </div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-header"><i class="fab fa-react"></i><h4>React</h4></div>
+            <div class="skill-items">
+              <span class="skill-tag">Components</span>
+              <span class="skill-tag">Props &amp; State</span>
+              <span class="skill-tag">Hooks</span>
+              <span class="skill-tag">Lifecycle</span>
+            </div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-header"><i class="fab fa-bootstrap"></i><h4>Bootstrap</h4></div>
             <div class="skill-items">
               <span class="skill-tag">Grid System</span>
               <span class="skill-tag">Components</span>
@@ -255,30 +237,14 @@
               <span class="skill-tag">Customization</span>
             </div>
           </div>
-
-          <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-react"></i>
-              <h4>Basic React</h4>
-            </div>
-            <div class="skill-items">
-              <span class="skill-tag">Components</span>
-              <span class="skill-tag">Props</span>
-              <span class="skill-tag">State</span>
-              <span class="skill-tag">Lifecycle</span>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div class="skills-category" data-aos="fade-up">
-        <h3><i class="fas fa-wrench"></i> Development Tools & Practices</h3>
+      <div class="skills-category" data-aod data-aod-delay="200">
+        <h3><i class="fas fa-wrench"></i> Development Tools &amp; Practices</h3>
         <div class="skills-grid">
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-git-alt"></i>
-              <h4>Version Control</h4>
-            </div>
+            <div class="skill-header"><i class="fab fa-git-alt"></i><h4>Version Control</h4></div>
             <div class="skill-items">
               <span class="skill-tag">Git</span>
               <span class="skill-tag">GitHub</span>
@@ -286,24 +252,16 @@
               <span class="skill-tag">Pull Requests</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fas fa-code"></i>
-              <h4>IDEs & Editors</h4>
-            </div>
+            <div class="skill-header"><i class="fas fa-code"></i><h4>IDEs &amp; Editors</h4></div>
             <div class="skill-items">
               <span class="skill-tag">VS Code</span>
               <span class="skill-tag">Visual Studio</span>
               <span class="skill-tag">SQL Server Management</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fas fa-database"></i>
-              <h4>Database & Analysis</h4>
-            </div>
+            <div class="skill-header"><i class="fas fa-database"></i><h4>Database &amp; Analysis</h4></div>
             <div class="skill-items">
               <span class="skill-tag">SQL</span>
               <span class="skill-tag">Database Design</span>
@@ -311,24 +269,16 @@
               <span class="skill-tag">Query Optimization</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-wordpress"></i>
-              <h4>CMS</h4>
-            </div>
+            <div class="skill-header"><i class="fab fa-wordpress"></i><h4>CMS</h4></div>
             <div class="skill-items">
               <span class="skill-tag">WordPress</span>
               <span class="skill-tag">Theme Customization</span>
               <span class="skill-tag">Content Management</span>
             </div>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fas fa-cloud"></i>
-              <h4>Microsoft 365</h4>
-            </div>
+            <div class="skill-header"><i class="fas fa-cloud"></i><h4>Microsoft 365</h4></div>
             <div class="skill-items">
               <span class="skill-tag">Office Apps</span>
               <span class="skill-tag">Cloud Collaboration</span>
@@ -338,27 +288,20 @@
         </div>
       </div>
 
-      <div class="skills-category" data-aos="fade-up">
+      <div class="skills-category" data-aod data-aod-delay="200">
         <h3><i class="fas fa-network-wired"></i> Additional Technical Knowledge</h3>
         <div class="skills-grid">
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fas fa-sitemap"></i>
-              <h4>Systems Analysis</h4>
-            </div>
+            <div class="skill-header"><i class="fas fa-sitemap"></i><h4>Systems Analysis</h4></div>
             <ul class="skill-list">
-              <li><i class="fas fa-angle-right"></i> Systems Analysis & Design</li>
+              <li><i class="fas fa-angle-right"></i> Systems Analysis &amp; Design</li>
               <li><i class="fas fa-angle-right"></i> Business Informatics</li>
               <li><i class="fas fa-angle-right"></i> ICT Systems</li>
               <li><i class="fas fa-angle-right"></i> Requirements Gathering</li>
             </ul>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fas fa-network-wired"></i>
-              <h4>Networking</h4>
-            </div>
+            <div class="skill-header"><i class="fas fa-network-wired"></i><h4>Networking</h4></div>
             <ul class="skill-list">
               <li><i class="fas fa-angle-right"></i> DNS Configuration</li>
               <li><i class="fas fa-angle-right"></i> DHCP Setup</li>
@@ -366,14 +309,10 @@
               <li><i class="fas fa-angle-right"></i> Network Troubleshooting</li>
             </ul>
           </div>
-
           <div class="skill-card">
-            <div class="skill-header">
-              <i class="fab fa-windows"></i>
-              <h4>Windows Systems</h4>
-            </div>
+            <div class="skill-header"><i class="fab fa-windows"></i><h4>Windows Systems</h4></div>
             <ul class="skill-list">
-              <li><i class="fas fa-angle-right"></i> Windows 10 & 11</li>
+              <li><i class="fas fa-angle-right"></i> Windows 10 &amp; 11</li>
               <li><i class="fas fa-angle-right"></i> System Administration</li>
               <li><i class="fas fa-angle-right"></i> User Management</li>
               <li><i class="fas fa-angle-right"></i> Security Settings</li>
@@ -384,58 +323,45 @@
     </div>
   </section>
 
-  <!-- Experience Section -->
-  <section class="experience" id="experience">
+  <!-- ══════════ EXPERIENCE ══════════ -->
+  <section class="experience-section" id="experience">
+    <canvas class="section-pulse-canvas" data-section-canvas></canvas>
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">Work Experience</span>
-        <h2 class="section-title">Professional Journey</h2>
-        <p class="section-description">Building real-world solutions</p>
+      <div class="section-header">
+        <span class="section-subtitle" data-aod data-aod-delay="0">Work Experience</span>
+        <h2 class="section-title" data-aod data-aod-delay="80">Professional Journey</h2>
+        <p class="section-description" data-aod data-aod-delay="150">Building real-world solutions</p>
       </div>
 
       <div class="timeline">
-        <div class="timeline-item" data-aos="fade-up">
+        <div class="timeline-item" data-aod data-aod-delay="200">
           <div class="timeline-header">
             <div class="timeline-title">
-              <h3>Freelance Web Developer</h3>
+              <h3>Freelance Full Stack Web Developer</h3>
               <h4>Remote</h4>
             </div>
             <div class="timeline-date">Feb 2024 – Present</div>
           </div>
           <div class="timeline-content">
             <ul>
-              <li>Delivered responsive, high-quality websites for multiple small businesses, improving user engagement
-                and layout consistency by translating structured requirements into clean HTML, CSS, and JavaScript
-                templates.</li>
-              <li>Increased cross-device reliability by implementing mobile-first responsive design principles and
-                conducting systematic cross-browser testing before production deployment.</li>
-              <li>Reduced recurring layout and rendering issues by debugging JavaScript functionality and identifying
-                root causes instead of applying temporary fixes.</li>
-              <li>Improved long-term maintainability across projects by designing reusable UI components and modular
-                code structures supported by disciplined Git version control workflows.</li>
-              <li>Accelerated production updates by committing structured changes, maintaining clean repositories, and
-                tracking version history to ensure safe deployment and rollback capability.</li>
-              <li>Decreased revision cycles by carefully interpreting stakeholder scope documents and validating
-                features against expected user outcomes before delivery.</li>
-              <li>Enhanced user experience by refining spacing, typography, layout hierarchy, and interaction flow using
-                UI/UX best practice principles.</li>
-              <li>Managed multiple client projects simultaneously, prioritizing development tasks independently and
-                meeting agreed delivery timelines without direct supervision.</li>
-              <li>Strengthened documentation quality by maintaining structured notes on template logic, reusable
-                snippets, and architectural decisions to support future enhancements.</li>
+              <li>Delivered responsive, high-quality websites for multiple small businesses, improving user engagement and layout consistency by translating structured requirements into clean HTML, CSS, and JavaScript templates.</li>
+              <li>Increased cross-device reliability by implementing mobile-first responsive design principles and conducting systematic cross-browser testing before production deployment.</li>
+              <li>Reduced recurring layout and rendering issues by debugging JavaScript functionality and identifying root causes instead of applying temporary fixes.</li>
+              <li>Improved long-term maintainability across projects by designing reusable UI components and modular code structures supported by disciplined Git version control workflows.</li>
+              <li>Accelerated production updates by committing structured changes, maintaining clean repositories, and tracking version history to ensure safe deployment and rollback capability.</li>
+              <li>Decreased revision cycles by carefully interpreting stakeholder scope documents and validating features against expected user outcomes before delivery.</li>
+              <li>Enhanced user experience by refining spacing, typography, layout hierarchy, and interaction flow using UI/UX best practice principles.</li>
+              <li>Managed multiple client projects simultaneously, prioritizing development tasks independently and meeting agreed delivery timelines without direct supervision.</li>
+              <li>Strengthened documentation quality by maintaining structured notes on template logic, reusable snippets, and architectural decisions to support future enhancements.</li>
             </ul>
             <div class="tech-used">
-              <span>HTML5</span>
-              <span>CSS3</span>
-              <span>JavaScript (ES6+)</span>
-              <span>Bootstrap</span>
-              <span>Git</span>
-              <span>WordPress</span>
+              <span>HTML5</span><span>CSS3</span><span>JavaScript (ES6+)</span>
+              <span>Bootstrap</span><span>Git</span><span>WordPress</span>
             </div>
           </div>
         </div>
 
-        <div class="timeline-item" data-aos="fade-up">
+        <div class="timeline-item" data-aod data-aod-delay="300">
           <div class="timeline-header">
             <div class="timeline-title">
               <h3>Sales Assistant</h3>
@@ -445,12 +371,9 @@
           </div>
           <div class="timeline-content">
             <ul>
-              <li>Improved customer satisfaction in a fast-paced retail environment by clearly communicating product
-                information and resolving queries efficiently.</li>
-              <li>Maintained operational accuracy by handling transactions and record-keeping with strong attention to
-                detail.</li>
-              <li>Strengthened professional communication and teamwork skills by collaborating with colleagues to
-                support structured daily operations.</li>
+              <li>Improved customer satisfaction in a fast-paced retail environment by clearly communicating product information and resolving queries efficiently.</li>
+              <li>Maintained operational accuracy by handling transactions and record-keeping with strong attention to detail.</li>
+              <li>Strengthened professional communication and teamwork skills by collaborating with colleagues to support structured daily operations.</li>
             </ul>
           </div>
         </div>
@@ -458,126 +381,39 @@
     </div>
   </section>
 
-  <!-- Projects Section -->
-  <section class="projects" id="projects">
+
+  <!-- ══════════ EDUCATION ══════════ -->
+  <section class="education-section" id="education">
+    <canvas class="section-pulse-canvas" data-section-canvas></canvas>
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">Featured Work</span>
-        <h2 class="section-title">Recent Projects</h2>
-        <p class="section-description">Showcasing my development capabilities</p>
-      </div>
-
-      <div class="projects-grid">
-        <div class="project-card" data-aos="fade-up">
-          <div class="project-image" style="background-image: url('imgs/cclogo.png')">
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://alex-sello7.github.io/CascadeMainWebsite/" class="project-link" target="_blank"><i
-                    class="fas fa-external-link-alt"></i></a>
-
-              </div>
-            </div>
-          </div>
-          <div class="project-content">
-            <h3>Cascade Creations Website</h3>
-            <div class="project-tech">
-              <span>HTML</span>
-              <span>CSS</span>
-              <span>JavaScript</span>
-              <span>Bootstrap</span>
-            </div>
-            <p>Developed a responsive single-page business website with structured layout architecture and reusable UI
-              sections. Implemented consistent design patterns and mobile-first responsiveness.</p>
-            <a href="https://alex-sello7.github.io/CascadeMainWebsite/" class="project-link" target="_blank">View Live
-              <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-
-        <div class="project-card" data-aos="fade-up" data-aos-delay="100">
-          <div class="project-image" style="background-image: url('imgs/travel_designer.jpg')">
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://alex-sello7.github.io/Seamless-Travel/" class="project-link" target="_blank"><i
-                    class="fas fa-external-link-alt"></i></a>
-
-              </div>
-            </div>
-          </div>
-          <div class="project-content">
-            <h3>Seamless Travel Website Revamp</h3>
-            <div class="project-tech">
-              <span>HTML</span>
-              <span>CSS</span>
-              <span>JavaScript</span>
-              <span>Bootstrap</span>
-            </div>
-            <p>Redesigned and modernised layout structure to improve visual hierarchy and usability. Applied
-              cross-browser testing and structured CSS organization for maintainability.</p>
-            <a href="https://alex-sello7.github.io/Seamless-Travel/" class="project-link" target="_blank">View Live <i
-                class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-
-        <!-- Ousadia Tech Project -->
-        <div class="project-card" data-aos="fade-up" data-aos-delay="200">
-          <div class="project-image" style="background-image: url('imgs/favicon.png')">
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://alex-sello7.github.io/Ousadia_Tech/" class="project-link" target="_blank"><i
-                    class="fas fa-external-link-alt"></i></a>
-
-              </div>
-            </div>
-          </div>
-          <div class="project-content">
-            <h3>Ousadia Tech Solutions</h3>
-            <div class="project-tech">
-              <span>HTML</span>
-              <span>CSS</span>
-              <span>JavaScript</span>
-              <span>Responsive Design</span>
-            </div>
-            <p>Modern tech-focused website showcasing contemporary design principles and responsive layout architecture.
-              Built with clean, maintainable code and optimized for all devices.</p>
-            <a href="https://alex-sello7.github.io/Ousadia_Tech/" class="project-link" target="_blank">View Live <i
-                class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Education Section -->
-  <section class="education" id="education">
-    <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">Education</span>
-        <h2 class="section-title">Academic Background</h2>
-        <p class="section-description">Currently pursuing IT degree with practical focus</p>
+      <div class="section-header">
+        <span class="section-subtitle" data-aod data-aod-delay="0">Education</span>
+        <h2 class="section-title" data-aod data-aod-delay="80">Academic Background</h2>
+        <p class="section-description" data-aod data-aod-delay="150">Currently pursuing IT degree with practical focus</p>
       </div>
 
       <div class="education-grid">
-        <div class="education-card" data-aos="fade-right">
+        <div class="education-card" data-aod data-aod-delay="200" data-aod-dir="left">
           <h3>Information Technology</h3>
           <div class="institution">University of South Africa</div>
           <span class="date">February 2023 - Present</span>
-          <h4 style="margin: 1.5rem 0 1rem; color: var(--primary);">Relevant Coursework:</h4>
+          <h4 style="margin: 1.5rem 0 1rem; color: var(--cyan);">Relevant Coursework:</h4>
           <ul class="course-list">
             <li><i class="fas fa-circle"></i> Programming in JavaScript</li>
             <li><i class="fas fa-circle"></i> Programming in Java</li>
-            <li><i class="fas fa-circle"></i> Web Development (HTML5 & CSS3)</li>
-            <li><i class="fas fa-circle"></i> Systems Analysis & Design</li>
+            <li><i class="fas fa-circle"></i> Web Development (HTML5 &amp; CSS3)</li>
+            <li><i class="fas fa-circle"></i> Systems Analysis &amp; Design</li>
             <li><i class="fas fa-circle"></i> Database Systems</li>
             <li><i class="fas fa-circle"></i> Business Informatics</li>
             <li><i class="fas fa-circle"></i> Software Development Fundamentals</li>
           </ul>
         </div>
 
-        <div class="education-card" data-aos="fade-left">
+        <div class="education-card" data-aod data-aod-delay="300" data-aod-dir="right">
           <h3>National Senior Certificate</h3>
           <div class="institution">Modiri Secondary School</div>
           <span class="date">December 2013</span>
-          <h4 style="margin: 1.5rem 0 1rem; color: var(--primary);">Relevant Coursework:</h4>
+          <h4 style="margin: 1.5rem 0 1rem; color: var(--cyan);">Relevant Coursework:</h4>
           <ul class="course-list">
             <li><i class="fas fa-circle"></i> Mathematics</li>
             <li><i class="fas fa-circle"></i> Physical Science</li>
@@ -589,138 +425,118 @@
     </div>
   </section>
 
-  <!-- Certificates Section -->
-  <section class="certificates" id="certificates">
+  <!-- ══════════ CERTIFICATES ══════════ -->
+  <section class="certificates-section" id="certificates">
+    <canvas class="section-pulse-canvas" data-section-canvas></canvas>
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">Certifications</span>
-        <h2 class="section-title">Professional Development</h2>
-        <p class="section-description">Verified certifications from industry-recognized platforms</p>
+      <div class="section-header">
+        <span class="section-subtitle" data-aod data-aod-delay="0">Certifications</span>
+        <h2 class="section-title" data-aod data-aod-delay="80">Professional Development</h2>
+        <p class="section-description" data-aod data-aod-delay="150">Verified certifications from industry-recognized platforms</p>
       </div>
 
       <div class="certificates-grid">
-        <div class="certificate-card" data-aos="fade-up">
+        <div class="certificate-card" data-aod data-aod-delay="200">
           <div class="certificate-badge"><i class="fas fa-check-circle"></i> Verified</div>
-          <div class="certificate-icon">
-            <i class="fas fa-laptop-code"></i>
-          </div>
+          <div class="certificate-icon"><i class="fas fa-laptop-code"></i></div>
           <h3>Full Stack Web Development Bootcamp</h3>
           <div class="certificate-issuer">Udemy</div>
-          <p>Comprehensive training covering frontend and backend fundamentals, including modern JavaScript, React,
-            Node.js, and database integration.</p>
+          <p>Comprehensive training covering frontend and backend fundamentals, including modern JavaScript, React, Node.js, and database integration.</p>
         </div>
 
-        <div class="certificate-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="certificate-card" data-aod data-aod-delay="300">
           <div class="certificate-badge"><i class="fas fa-check-circle"></i> Verified</div>
-          <div class="certificate-icon">
-            <i class="fas fa-mobile-alt"></i>
-          </div>
+          <div class="certificate-icon"><i class="fas fa-mobile-alt"></i></div>
           <h3>Full Stack Web Development</h3>
           <div class="certificate-issuer">FNB App Academy</div>
-          <p>Practical web development program focused on real-world application building with industry best practices
-            and modern tooling.</p>
+          <p>Practical web development program focused on real-world application building with industry best practices and modern tooling.</p>
         </div>
 
-        <div class="certificate-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="certificate-card" data-aod data-aod-delay="400">
           <div class="certificate-badge"><i class="fas fa-check-circle"></i> Verified</div>
-          <div class="certificate-icon">
-            <i class="fas fa-database"></i>
-          </div>
+          <div class="certificate-icon"><i class="fas fa-database"></i></div>
           <h3>SQL for Data Analysis</h3>
           <div class="certificate-issuer">Simplilearn</div>
-          <p>Database querying, structured data analysis, and advanced SQL techniques for extracting meaningful insights
-            from relational databases.</p>
+          <p>Database querying, structured data analysis, and advanced SQL techniques for extracting meaningful insights from relational databases.</p>
         </div>
 
-        <div class="certificate-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="certificate-card" data-aod data-aod-delay="500">
           <div class="certificate-badge"><i class="fas fa-check-circle"></i> Verified</div>
-          <div class="certificate-icon">
-            <i class="fab fa-wordpress"></i>
-          </div>
+          <div class="certificate-icon"><i class="fab fa-wordpress"></i></div>
           <h3>WordPress Development</h3>
           <div class="certificate-issuer">Simplilearn</div>
-          <p>Website creation, theme customization, plugin management, and content management using WordPress CMS
-            platform.</p>
+          <p>Website creation, theme customization, plugin management, and content management using WordPress CMS platform.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section class="contact" id="contact">
+  <!-- ══════════ CONTACT ══════════ -->
+  <section class="contact-section" id="contact">
+    <canvas class="cta-canvas" id="ctaCanvas"></canvas>
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <span class="section-subtitle">Get In Touch</span>
-        <h2 class="section-title light">Let's Work Together</h2>
-        <p class="section-description" style="color: rgba(255,255,255,0.7);">Have a project in mind? I'd love to hear
-          about it</p>
+      <div class="section-header">
+        <span class="section-subtitle" data-aod data-aod-delay="0">Get In Touch</span>
+        <h2 class="section-title" data-aod data-aod-delay="80">Let's Work Together</h2>
+        <p class="section-description" data-aod data-aod-delay="150" style="color: rgba(255,255,255,0.7);">Have a project in mind? I'd love to hear about it</p>
       </div>
 
       <div class="contact-grid">
-        <div class="contact-info" data-aos="fade-right">
+        <div class="contact-info" data-aod data-aod-delay="220" data-aod-dir="left">
           <h3>Contact Information</h3>
           <div class="contact-details">
             <div class="contact-item">
               <i class="fas fa-map-marker-alt"></i>
-              <div>
-                <h4>Location</h4>
-                <p>Pretoria, South Africa</p>
-              </div>
+              <div><h4>Location</h4><p>Pretoria, South Africa</p></div>
             </div>
             <div class="contact-item">
               <i class="fas fa-phone"></i>
-              <div>
-                <h4>Phone</h4>
-                <p>072 078 6569</p>
-              </div>
+              <div><h4>Phone</h4><p>072 078 6569</p></div>
             </div>
             <div class="contact-item">
               <i class="fas fa-envelope"></i>
-              <div>
-                <h4>Email</h4>
-                <a href="mailto:atsello4@gmail.com">atsello4@gmail.com</a>
-              </div>
+              <div><h4>Email</h4><p><a href="/cdn-cgi/l/email-protection#8eeffafdebe2e2e1bacee9e3efe7e2a0ede1e3"><span class="__cf_email__" data-cfemail="0d6c797e68616162394d6a606c6461236e6260">[email&#160;protected]</span></a></p></div>
             </div>
           </div>
 
           <h3 style="margin-bottom: 1rem;">Connect With Me</h3>
           <div class="social-links">
-            <a href="https://github.com/Alex-Sello7" class="social-link" target="_blank"><i
-                class="fab fa-github"></i></a>
-            <a href="https://linkedin.com/in/alex-sello" class="social-link" target="_blank"><i
-                class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Alex-Sello7" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com/in/alex-sello" class="social-link" target="_blank"><i class="fab fa-linkedin-in"></i></a>
           </div>
         </div>
 
-        <div class="contact-form" data-aos="fade-left">
-          <form id="contactForm">
-            <div class="form-group">
-              <input type="text" id="name" placeholder="Your Name" required>
-            </div>
-            <div class="form-group">
-              <input type="email" id="email" placeholder="Email Address" required>
-            </div>
-            <div class="form-group">
-              <textarea id="message" placeholder="Your Message" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message <i
-                class="fas fa-paper-plane"></i></button>
-          </form>
+        <div class="contact-map-wrap" data-aod data-aod-delay="320" data-aod-dir="right">
+          <div class="contact-availability">
+            <div class="avail-dot"></div>
+            <span>Available for freelance &amp; full-time opportunities</span>
+          </div>
+          <iframe
+            class="contact-map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114779.57541606016!2d28.18021!3d-25.74486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9560b1c2b333d5%3A0xc4c2bdb19877b8c1!2sPretoria%2C%20South%20Africa!5e0!3m2!1sen!2sza!4v1700000000000"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Alex Sello — Pretoria, South Africa">
+          </iframe>
+          <div class="contact-map-footer">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Pretoria, Gauteng — open to remote work worldwide</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+    <!-- ══════════ FOOTER ══════════ -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2025 Alex Sello. All rights reserved. | Frontend Developer based in Pretoria</p>
+      <p>&copy; <span id="currentYear"></span> Alex Sello. All rights reserved. | Frontend Developer based in Pretoria</p>
     </div>
   </footer>
 
   <!-- Alert System -->
-  <div class="alert" id="alert" style="display: none;">
+  <div class="alert" id="alert" style="display:none;">
     <div class="alert-content">
       <i class="fas"></i>
       <span id="alertMessage"></span>
@@ -741,31 +557,21 @@
     </div>
     <div class="chat-messages" id="chatMessages">
       <div class="message received">
-        <div class="message-content">
-          Hi there! 👋 Thanks for reaching out. How can I help you today?
-        </div>
+        <div class="message-content">Hi there! 👋 Thanks for reaching out. How can I help you today?</div>
         <div class="message-time">Just now</div>
       </div>
     </div>
     <div class="chat-input-area">
       <div class="typing-indicator" id="typingIndicator">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </div>
       <div class="input-wrapper">
         <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
-        <button id="chatSend" class="chat-send">
-          <i class="fas fa-paper-plane"></i>
-        </button>
+        <button id="chatSend" class="chat-send"><i class="fas fa-paper-plane"></i></button>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-
-  <script src="index.js"></script>
+  <script src="index.js" defer></script>
 </body>
-
 </html>
