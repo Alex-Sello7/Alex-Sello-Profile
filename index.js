@@ -23,6 +23,9 @@
     setTimeout(() => {
       if (loadingScreen) loadingScreen.classList.add('hidden');
       document.body.style.overflow = 'auto';
+      // Re-size hero canvas now that it's visible
+      const hc = getEl('heroCanvas');
+      if (hc) { hc.width = hc.offsetWidth; hc.height = hc.offsetHeight; }
     }, 500);
   }
 
@@ -145,104 +148,151 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.2 });
   storyBlocks.forEach(block => storyObserver.observe(block));
 
-  // ========== INTERACTIVE SKILL ORBIT — ENHANCED ==========
+  // ========== INTERACTIVE SKILL ORBIT WITH FILTER ==========
   const skillsData = [
-    { name: 'HTML5',       desc: 'Semantic, accessible markup',      icon: '🌐', color: '#e44d26' },
-    { name: 'CSS3',        desc: 'Animations, Grid, Flexbox',        icon: '🎨', color: '#264de4' },
-    { name: 'JavaScript',  desc: 'ES6+, DOM, Async/Await',           icon: '⚡', color: '#f7df1e' },
-    { name: 'React',       desc: 'Hooks, State, Components',         icon: '⚛️',  color: '#61dafb' },
-    { name: 'Node.js',     desc: 'REST APIs, Express, Auth',         icon: '🟢', color: '#68a063' },
-    { name: 'Bootstrap',   desc: 'Rapid responsive layouts',         icon: '🅱️',  color: '#7952b3' },
-    { name: 'SQL',         desc: 'Queries, Joins, Data Analysis',    icon: '🗄️',  color: '#00758f' },
-    { name: 'Git',         desc: 'Version control, GitHub flows',    icon: '🔀', color: '#f05032' },
-    { name: 'WordPress',   desc: 'Themes, Plugins, CMS',             icon: '📝', color: '#21759b' }
+    // Frontend
+    { name: 'HTML5',                   desc: 'Semantic, accessible markup',        icon: '🌐', color: '#e44d26', cat: 'frontend'  },
+    { name: 'CSS3',                    desc: 'Animations, Grid, Flexbox',          icon: '🎨', color: '#264de4', cat: 'frontend'  },
+    { name: 'JavaScript ES6+',         desc: 'DOM, Async/Await, modules',          icon: '⚡', color: '#f7df1e', cat: 'frontend'  },
+    { name: 'React',                   desc: 'Hooks, State, Components',           icon: '⚛️', color: '#61dafb', cat: 'frontend'  },
+    { name: 'Bootstrap',               desc: 'Rapid responsive layouts',           icon: '🅱️', color: '#7952b3', cat: 'frontend'  },
+    // Backend & Data
+    { name: 'Node.js',                 desc: 'REST APIs, Express, Auth',           icon: '🟢', color: '#68a063', cat: 'backend'   },
+    { name: 'SQL',                     desc: 'Queries, Joins, Data Analysis',      icon: '🗄️', color: '#00758f', cat: 'backend'   },
+    { name: 'WordPress',               desc: 'Themes, Plugins, CMS',               icon: '📝', color: '#21759b', cat: 'backend'   },
+    { name: 'MongoDB',                 desc: 'NoSQL, document store basics',       icon: '🍃', color: '#4db33d', cat: 'backend'   },
+    // Systems & Analysis
+    { name: 'OO Analysis',             desc: 'Object-oriented methodologies',      icon: '🧩', color: '#8b5cf6', cat: 'systems'   },
+    { name: 'Systems Design',          desc: 'Structured analysis & design',       icon: '📐', color: '#06b6d4', cat: 'systems'   },
+    { name: 'GUI Programming',         desc: 'Graphical interface development',    icon: '🖥️', color: '#f59e0b', cat: 'systems'   },
+    { name: 'Database Design',         desc: 'Modelling & implementation',         icon: '💾', color: '#10b981', cat: 'systems'   },
+    // IT & Infra
+    { name: 'Networking',              desc: 'Install, support & maintain nets',   icon: '📡', color: '#3b82f6', cat: 'it'        },
+    { name: 'Workstation Support',     desc: 'Hardware & software maintenance',    icon: '🔧', color: '#64748b', cat: 'it'        },
+    { name: 'Software Maintenance',    desc: 'Install, configure, maintain',       icon: '⚙️', color: '#0ea5e9', cat: 'it'        },
+    // Business
+    { name: 'Business Informatics',    desc: 'Business IT systems I–III',          icon: '💼', color: '#ef4444', cat: 'business'  },
+    { name: 'e-Commerce',              desc: 'Online business strategies',         icon: '🛒', color: '#f97316', cat: 'business'  },
+    { name: 'Git & GitHub',            desc: 'Version control, branch workflows',  icon: '🔀', color: '#f05032', cat: 'business'  },
+    { name: 'VS Code',                 desc: 'Extensions, debugging, workflows',   icon: '💻', color: '#007acc', cat: 'business'  },
+    // Practices
+    { name: 'Responsive Design',       desc: 'Mobile-first, fluid layouts',        icon: '📱', color: '#00b4d8', cat: 'practices' },
+    { name: 'Reusable Components',     desc: 'DRY, modular architecture',          icon: '🔁', color: '#0077b6', cat: 'practices' },
+    { name: 'Clean Code',              desc: 'Readable, maintainable output',      icon: '✨', color: '#48cae4', cat: 'practices' },
+    { name: 'Cross-browser Testing',   desc: 'Consistent across all browsers',     icon: '🧪', color: '#023e8a', cat: 'practices' },
   ];
 
+  const categoryLabels = {
+    all:       'All Skills',
+    frontend:  '🌐 Frontend',
+    backend:   '🟢 Backend',
+    systems:   '📐 Systems',
+    it:        '🔧 IT & Infra',
+    business:  '💼 Business',
+    practices: '⚡ Practices',
+  };
+
   const orbitRing = document.getElementById('orbitRing');
+  const orbitCoreLabel = document.getElementById('orbitCoreLabel');
+
   if (orbitRing) {
-    const container = document.getElementById('orbitContainer');
-    let lines = [];
+    const container   = document.getElementById('orbitContainer');
+    let currentFilter = 'all';
+    let svgEl         = null;
 
     function getRadius() {
-      const w = container?.offsetWidth || 500;
-      return Math.min(210, w * 0.42);
+      const w = container?.offsetWidth || 600;
+      return Math.min(280, w * 0.44);
     }
 
-    // Draw SVG connector lines from center to each skill
-    function drawLines(r) {
-      lines.forEach(l => l.remove());
-      lines = [];
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible;';
-      const cx = (container?.offsetWidth || 500) / 2;
-      const cy = (container?.offsetHeight || 500) / 2;
-      skillsData.forEach((skill, i) => {
-        const angle = (i / skillsData.length) * Math.PI * 2 - Math.PI / 2;
-        const x2 = cx + Math.cos(angle) * r;
-        const y2 = cy + Math.sin(angle) * r;
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', cx); line.setAttribute('y1', cy);
-        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-        line.setAttribute('stroke', skill.color || 'rgba(0,180,216,0.3)');
+    function buildOrbit(filter) {
+      currentFilter = filter;
+      orbitRing.innerHTML = '';
+      if (svgEl) { svgEl.remove(); svgEl = null; }
+
+      const visible = filter === 'all'
+        ? skillsData
+        : skillsData.filter(s => s.cat === filter);
+
+      const total = visible.length;
+      const r     = getRadius();
+      const cx    = (container?.offsetWidth  || 600) / 2;
+      const cy    = (container?.offsetHeight || 600) / 2;
+
+      // Update center label
+      if (orbitCoreLabel) {
+        const parts = (categoryLabels[filter] || 'All Skills').split(' ');
+        const emoji = parts[0].match(/\p{Emoji}/u) ? parts[0] : '';
+        const label = emoji ? parts.slice(1).join(' ') : parts.join(' ');
+        orbitCoreLabel.innerHTML = `${emoji ? emoji + '<br>' : ''}${label}<br><span>${total} skill${total !== 1 ? 's' : ''}</span>`;
+      }
+
+      // SVG connector lines
+      svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svgEl.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible;';
+
+      visible.forEach((skill, i) => {
+        const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
+        const x2    = cx + Math.cos(angle) * r;
+        const y2    = cy + Math.sin(angle) * r;
+        const line  = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', cx);  line.setAttribute('y1', cy);
+        line.setAttribute('x2', x2);  line.setAttribute('y2', y2);
+        line.setAttribute('stroke', skill.color);
         line.setAttribute('stroke-width', '1');
         line.setAttribute('stroke-opacity', '0.25');
         line.setAttribute('stroke-dasharray', '4 4');
-        svg.appendChild(line);
-        lines.push(line);
+        line.dataset.idx = i;
+        svgEl.appendChild(line);
       });
-      orbitRing.parentElement.appendChild(svg);
-      lines.push(svg);
-    }
+      container.appendChild(svgEl);
 
-    function buildOrbit() {
-      // Clear existing
-      orbitRing.innerHTML = '';
-      const r = getRadius();
-      drawLines(r);
+      // Skill nodes
+      visible.forEach((skill, i) => {
+        const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
+        const x     = Math.cos(angle) * r;
+        const y     = Math.sin(angle) * r;
 
-      skillsData.forEach((skill, i) => {
-        const angle = (i / skillsData.length) * Math.PI * 2 - Math.PI / 2;
-        const x = Math.cos(angle) * r;
-        const y = Math.sin(angle) * r;
-
-        const div = document.createElement('div');
-        div.className = 'orbit-skill';
+        const div   = document.createElement('div');
+        div.className = 'orbit-skill orbit-skill-enter';
         div.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-        div.style.setProperty('--skill-color', skill.color || 'var(--cyan)');
-        div.innerHTML = `
-          <div class="orbit-skill-icon">${skill.icon}</div>
-          <strong>${skill.name}</strong>
-          <small>${skill.desc}</small>`;
+        div.style.setProperty('--skill-color', skill.color);
+        div.style.animationDelay = `${i * 40}ms`;
+        div.innerHTML = `<div class="orbit-skill-icon">${skill.icon}</div><strong>${skill.name}</strong><small>${skill.desc}</small>`;
 
-        // Hover: highlight matching line
         div.addEventListener('mouseenter', () => {
-          const svgEl = orbitRing.parentElement.querySelector('svg');
-          if (svgEl) {
-            const lineEls = svgEl.querySelectorAll('line');
-            if (lineEls[i]) {
-              lineEls[i].setAttribute('stroke-opacity', '0.9');
-              lineEls[i].setAttribute('stroke-width', '2');
-            }
+          const lines = svgEl?.querySelectorAll('line');
+          if (lines?.[i]) {
+            lines[i].setAttribute('stroke-opacity', '0.9');
+            lines[i].setAttribute('stroke-width', '2.5');
           }
         });
         div.addEventListener('mouseleave', () => {
-          const svgEl = orbitRing.parentElement.querySelector('svg');
-          if (svgEl) {
-            const lineEls = svgEl.querySelectorAll('line');
-            if (lineEls[i]) {
-              lineEls[i].setAttribute('stroke-opacity', '0.25');
-              lineEls[i].setAttribute('stroke-width', '1');
-            }
+          const lines = svgEl?.querySelectorAll('line');
+          if (lines?.[i]) {
+            lines[i].setAttribute('stroke-opacity', '0.25');
+            lines[i].setAttribute('stroke-width', '1');
           }
         });
 
         orbitRing.appendChild(div);
+        // Trigger enter animation
+        requestAnimationFrame(() => div.classList.add('orbit-skill-visible'));
       });
     }
 
-    buildOrbit();
-    setTimeout(buildOrbit, 300);
-    window.addEventListener('resize', () => setTimeout(buildOrbit, 100));
+    // Filter button wiring
+    document.querySelectorAll('.orbit-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.orbit-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        buildOrbit(btn.dataset.filter);
+      });
+    });
+
+    buildOrbit('all');
+    setTimeout(() => buildOrbit(currentFilter), 300);
+    window.addEventListener('resize', () => setTimeout(() => buildOrbit(currentFilter), 100));
   }
 
   // ========== TIMELINE ANIMATION ==========
@@ -288,15 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroCanvas = document.getElementById('heroCanvas');
   if (heroCanvas) {
     const ctx = heroCanvas.getContext('2d');
-    let W, H, mouseX = 0.5, mouseY = 0.5;
+    let W, H, mouseX = 0.5, mouseY = 0.5, heroVisible = true;
+
+    const heroVisObs = new IntersectionObserver(e => { heroVisible = e[0].isIntersecting; }, { threshold: 0 });
+    heroVisObs.observe(heroCanvas.parentElement || heroCanvas);
     
     function resizeHero() {
-      W = heroCanvas.width = heroCanvas.offsetWidth;
-      H = heroCanvas.height = heroCanvas.offsetHeight;
+      W = heroCanvas.width = heroCanvas.offsetWidth || window.innerWidth;
+      H = heroCanvas.height = heroCanvas.offsetHeight || window.innerHeight;
     }
     
     window.addEventListener('resize', resizeHero);
     resizeHero();
+    // Re-run after loader hides so canvas has real dimensions
+    setTimeout(resizeHero, 600);
     
     const heroParent = heroCanvas.parentElement;
     if (heroParent) {
@@ -308,10 +363,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function drawHero() {
-      if (!ctx || !W || !H) {
-        requestAnimationFrame(drawHero);
-        return;
-      }
+      requestAnimationFrame(drawHero);
+      if (!heroVisible) return;
+      if (!ctx || !W || !H) { resizeHero(); return; }
       ctx.clearRect(0, 0, W, H);
       
       const grad = ctx.createLinearGradient(0, 0, W, H);
@@ -321,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
       
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 40; i++) {
         ctx.beginPath();
         const angle = Date.now() * 0.001 + i;
         const x = (Math.sin(angle) * 0.5 + 0.5) * W;
@@ -332,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillStyle = `rgba(0,180,216,${0.2 + Math.sin(angle) * 0.1})`;
         ctx.fill();
       }
-      requestAnimationFrame(drawHero);
     }
     drawHero();
   }
@@ -364,14 +417,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let time = 0;
     const isLight = sectionId === 'about' || sectionId === 'experience' || sectionId === 'certificates';
+    let visible = false;
+    const visObserver = new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+    }, { threshold: 0 });
+    visObserver.observe(canvas.parentElement || canvas);
     
     function drawSection() {
+      requestAnimationFrame(drawSection);
+      if (!visible) return;
       // Re-check size if still 0
       if (!W || !H) { resizeSection(); }
-      if (!ctx || !W || !H) {
-        requestAnimationFrame(drawSection);
-        return;
-      }
+      if (!ctx || !W || !H) return;
       ctx.clearRect(0, 0, W, H);
       
       ctx.fillStyle = isLight ? 'rgba(248, 250, 252, 0.9)' : 'rgba(6, 13, 22, 0.9)';
@@ -380,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < 5; i++) {
         ctx.beginPath();
         const yOffset = Math.sin(time * 0.5 + i) * 25;
-        for (let x = 0; x <= W; x += 20) {
+        for (let x = 0; x <= W; x += 40) {
           const y = H * (0.3 + i * 0.1) + Math.sin(x * 0.008 + time + i) * 35 + yOffset;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
@@ -390,10 +447,10 @@ document.addEventListener('DOMContentLoaded', () => {
           : `rgba(0, 180, 216, ${0.08 + i * 0.02})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
+
       }
       
       time += 0.015;
-      requestAnimationFrame(drawSection);
     }
     
     drawSection();

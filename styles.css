@@ -688,15 +688,180 @@ section {
   overflow: hidden;
 }
 
+/* ===== SKILL ORBIT WITH FILTER ===== */
 .orbit-wrapper {
   position: relative;
   width: 100%;
-  min-height: 550px;
+  min-height: 620px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem 0;
+  margin: 1.5rem 0 0;
 }
+
+.orbit-container {
+  position: relative;
+  width: 620px;
+  height: 620px;
+  max-width: 92vw;
+  max-height: 92vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.orbit-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, var(--teal), var(--teal-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(0, 180, 216, 0.4);
+  z-index: 10;
+  animation: pulseGlow 2s ease-in-out infinite;
+  transition: box-shadow 0.3s ease;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,180,216,0.4); transform: translate(-50%,-50%) scale(1); }
+  50%       { box-shadow: 0 0 55px rgba(0,180,216,0.8); transform: translate(-50%,-50%) scale(1.03); }
+}
+
+.orbit-core {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: white;
+  line-height: 1.3;
+  padding: 0 0.5rem;
+}
+
+.orbit-core span {
+  font-size: 0.75rem;
+  display: block;
+  color: var(--cyan-bright);
+  margin-top: 0.25rem;
+  font-weight: 400;
+}
+
+.orbit-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+/* Skill nodes */
+.orbit-skill {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 118px;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 0.65rem 0.5rem 0.55rem;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  z-index: 5;
+  transition: background 0.25s ease, border-color 0.25s ease,
+              box-shadow 0.25s ease, transform 0.25s ease, opacity 0.3s ease;
+  /* entry animation base state */
+  opacity: 0;
+  scale: 0.6;
+}
+
+.orbit-skill.orbit-skill-visible {
+  opacity: 1;
+  scale: 1;
+  transition: background 0.25s ease, border-color 0.25s ease,
+              box-shadow 0.25s ease, opacity 0.35s ease, scale 0.35s ease;
+}
+
+.orbit-skill:hover {
+  background: var(--skill-color, var(--orange));
+  border-color: var(--skill-color, var(--orange));
+  box-shadow: 0 0 22px var(--skill-color, var(--orange));
+  z-index: 20;
+  scale: 1.12;
+}
+
+.orbit-skill-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.orbit-skill small {
+  font-size: 0.62rem;
+  font-weight: 400;
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.orbit-skill:hover small { color: rgba(255,255,255,0.9); }
+
+/* Filter buttons */
+.orbit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.orbit-filter-btn {
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.2s ease, border-color 0.2s ease,
+              color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.orbit-filter-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.orbit-filter-btn.active {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(0,180,216,0.4);
+}
+
+@media (max-width: 600px) {
+  .orbit-container { width: 100vw; height: 100vw; }
+  .orbit-skill { width: 90px; font-size: 0.68rem; padding: 0.45rem 0.3rem; }
+  .orbit-skill-icon { font-size: 1rem; }
+  .orbit-skill small { display: none; }
+  .orbit-center { width: 110px; height: 110px; }
+  .orbit-core { font-size: 0.9rem; }
+}
+
+/* Legacy grid class — hidden */
+.skill-categories { display: none; }
 
 .orbit-container {
   position: relative;

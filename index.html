@@ -149,23 +149,37 @@
     </div>
   </section>
 
-  <!-- SKILLS SECTION - FIXED ORBIT -->
+  <!-- SKILLS SECTION - ORBIT WITH FILTER -->
   <section class="skills-section" id="skills">
     <canvas class="section-pulse-canvas" id="skillsCanvas"></canvas>
     <div class="container">
       <div class="section-header">
         <span class="section-subtitle">Technical Arsenal</span>
-        <h2 class="section-title">Interactive Skill Orbit</h2>
-        <p class="section-description">Hover over any skill to explore — each one tells a story</p>
+        <h2 class="section-title">My Skill Set</h2>
+        <p class="section-description">Filter by category — hover any skill to explore</p>
       </div>
+
+      <!-- Filter Toggle Buttons -->
+      <div class="orbit-filters" id="orbitFilters">
+        <button class="orbit-filter-btn active" data-filter="all">All</button>
+        <button class="orbit-filter-btn" data-filter="frontend">🌐 Frontend</button>
+        <button class="orbit-filter-btn" data-filter="backend">🟢 Backend &amp; Data</button>
+        <button class="orbit-filter-btn" data-filter="systems">📐 Systems</button>
+        <button class="orbit-filter-btn" data-filter="it">🔧 IT &amp; Infra</button>
+        <button class="orbit-filter-btn" data-filter="business">💼 Business</button>
+        <button class="orbit-filter-btn" data-filter="practices">⚡ Practices</button>
+      </div>
+
+      <!-- Orbit -->
       <div class="orbit-wrapper">
         <div class="orbit-container" id="orbitContainer">
           <div class="orbit-center">
-            <div class="orbit-core">Alex<br><span>Tech Stack</span></div>
+            <div class="orbit-core" id="orbitCoreLabel">All<br><span>Skills</span></div>
           </div>
           <div class="orbit-ring" id="orbitRing"></div>
         </div>
       </div>
+
     </div>
   </section>
 
@@ -284,7 +298,8 @@
   <section class="contact-section" id="contact">
     <canvas class="cta-canvas" id="ctaCanvas"></canvas>
     <div class="container">
-      <div class="section-header"><span class="section-subtitle">Connect</span><h2 class="section-title">Let's Create Together</h2></div>
+      <div class="section-header"><span class="section-subtitle">Connect</span>
+        <h2 class="section-title">Let's Connect</h2></div>
       <div class="contact-grid"><div class="contact-info"><h3>Contact Information</h3><div class="contact-details"><div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><h4>Location</h4><p>Pretoria, South Africa</p></div></div><div class="contact-item"><i class="fas fa-phone"></i><div><h4>Phone</h4><p>072 078 6569</p></div></div><div class="contact-item"><i class="fas fa-envelope"></i><div><h4>Email</h4><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="33525f564b1d40565f5f5c73564b525e435f561d505c5e">[email&#160;protected]</a></p></div></div></div><div class="social-links"><a href="#" class="social-link"><i class="fab fa-github"></i></a><a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a></div></div><div class="contact-map-wrap"><div class="contact-availability"><div class="avail-dot"></div><span>Available for freelance & full-time</span></div><iframe class="contact-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114779.57541606016!2d28.18021!3d-25.74486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9560b1c2b333d5%3A0xc4c2bdb19877b8c1!2sPretoria%2C%20South%20Africa!5e0!3m2!1sen!2sza!4v1700000000000" allowfullscreen loading="lazy"></iframe></div></div>
     </div>
   </section>
@@ -363,7 +378,7 @@
             <div class="recruiter-contacts">
               <div class="rc-item"><i class="fas fa-map-marker-alt"></i><span>Pretoria, South Africa</span></div>
               <div class="rc-item"><i class="fas fa-phone"></i><span>072 078 6569</span></div>
-              <div class="rc-item"><i class="fas fa-envelope"></i><span>atsello4@gmail.com</span></div>
+              <div class="rc-item"><i class="fas fa-envelope"></i><span><a href="mailto:atsello4@gmail.com" >atsello4@gmail.com</a></span></div>
               <div class="rc-item"><i class="fab fa-github"></i><a href="https://github.com/Alex-Sello7" target="_blank">github.com/Alex-Sello7</a></div>
               <div class="rc-item"><i class="fab fa-linkedin"></i><span>linkedin.com/in/alex-sello</span></div>
             </div>
@@ -434,11 +449,19 @@
               </div>
               <div class="rc-skill-group">
                 <div class="rc-skill-label">Backend &amp; Data</div>
-                <div class="recruiter-skills"><span>Node.js</span><span>SQL</span><span>WordPress</span></div>
+                <div class="recruiter-skills"><span>Node.js</span><span>SQL</span><span>WordPress</span><span>MongoDB (basics)</span></div>
               </div>
               <div class="rc-skill-group">
-                <div class="rc-skill-label">Tools &amp; Practices</div>
-                <div class="recruiter-skills"><span>Git &amp; GitHub</span><span>VS Code</span><span>Responsive Design</span><span>Cross-browser Testing</span></div>
+                <div class="rc-skill-label">Systems &amp; Analysis</div>
+                <div class="recruiter-skills"><span>Object-Oriented Analysis</span><span>Structured Systems Analysis &amp; Design</span><span>GUI Programming</span><span>Database Design</span></div>
+              </div>
+              <div class="rc-skill-group">
+                <div class="rc-skill-label">IT &amp; Infrastructure</div>
+                <div class="recruiter-skills"><span>Network Technical Skills</span><span>Workstation Support</span><span>Software Installation &amp; Maintenance</span></div>
+              </div>
+              <div class="rc-skill-group">
+                <div class="rc-skill-label">Business &amp; Tools</div>
+                <div class="recruiter-skills"><span>Business Informatics</span><span>e-Commerce Strategies</span><span>Git &amp; GitHub</span><span>VS Code</span><span>Responsive Design</span><span>Cross-browser Testing</span></div>
               </div>
             </div>
 
@@ -468,11 +491,19 @@
                 <div class="rc-cert"><i class="fas fa-check-circle"></i><div><strong>WordPress Development</strong><span>Simplilearn</span></div></div>
               </div>
             </div>
-          </div>
+
+          </div><!-- /recruiter-right -->
+        </div><!-- /recruiter-columns -->
+
+        <div class="recruiter-divider"></div>
+        <div class="recruiter-footer">
+          <a href="mailto:atsello4@gmail.com" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Alex</a>
+          <a href="tel:0720786569" class="btn btn-outline"><i class="fas fa-phone"></i> 072 078 6569</a>
         </div>
-      </div>
-    </div>
-  </div>
+
+      </div><!-- /recruiter-content -->
+    </div><!-- /recruiter-panel -->
+  </div><!-- /recruiter-overlay -->
 
   <script src="index.js"></script>
 </body>
