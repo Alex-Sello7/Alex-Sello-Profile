@@ -38,6 +38,14 @@
   box-sizing: border-box;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
@@ -305,6 +313,16 @@ section {
   gap: 0.5rem;
 }
 
+.nav-links a i {
+  font-size: 0.75rem;
+  color: var(--cyan);
+  transition: color 0.25s ease;
+}
+
+.nav-links a:hover i {
+  color: var(--cyan-light);
+}
+
 .nav-links a:hover {
   color: white;
   background: rgba(0, 180, 216, 0.15);
@@ -529,7 +547,9 @@ section {
 }
 
 .section-subtitle {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -540,6 +560,11 @@ section {
   border-radius: var(--radius-full);
   padding: 0.35rem 1rem;
   margin-bottom: 1rem;
+}
+
+.section-subtitle i {
+  font-size: 0.7rem;
+  letter-spacing: 0;
 }
 
 .section-subtitle.light {
@@ -575,11 +600,125 @@ section {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.7;
+  opacity: 1;
   display: block;
 }
 
-/* ===== ABOUT SECTION ===== */
+/* ===== CV CTA SECTIONS ===== */
+.cv-cta-section {
+  position: relative;
+  padding: 120px 0;
+  overflow: hidden;
+  background: #020c1b;
+}
+
+.cv-cta-section.cv-cta-alt {
+  background: #01080f;
+}
+
+.cv-cta-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.cv-cta-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--orange);
+  background: rgba(255, 107, 43, 0.1);
+  border: 1px solid rgba(255, 107, 43, 0.35);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 1.1rem;
+  margin-bottom: 1.5rem;
+  animation: ctaBadgePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ctaBadgePulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,107,43,0); }
+  50%       { box-shadow: 0 0 18px rgba(255,107,43,0.25); }
+}
+
+.cv-cta-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.cv-cta-title span {
+  background: linear-gradient(135deg, var(--cyan-light), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cv-cta-desc {
+  font-size: 1.1rem;
+  color: rgba(180, 220, 240, 0.8);
+  max-width: 580px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.75;
+}
+
+.cv-cta-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.cv-cta-scroll-hint {
+  display: flex;
+  justify-content: center;
+}
+
+.cv-cta-scroll-hint a {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  animation: bounceDown 1.8s ease-in-out infinite;
+}
+
+.cv-cta-scroll-hint a:hover {
+  background: rgba(0, 180, 216, 0.12);
+  border-color: var(--cyan);
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(7px); }
+}
+
+/* AOD animations for CTA content */
+[data-aod] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);
+}
+
+[data-aod].aod-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 .about-section {
   background: linear-gradient(135deg, #f8fafc, #eef2f6);
 }
@@ -595,6 +734,15 @@ section {
   color: var(--teal-dark) !important;
   font-size: 1.3rem;
   margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.story-heading i {
+  color: var(--teal);
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .story-text {
@@ -1114,6 +1262,15 @@ section {
 .timeline-header h3 {
   color: var(--teal-dark);
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.timeline-header h3 i {
+  color: var(--teal);
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .timeline-date {
@@ -1132,17 +1289,24 @@ section {
 
 .timeline-content li {
   margin-bottom: 0.65rem;
-  padding-left: 1.5rem;
+  padding-left: 0;
   position: relative;
   color: var(--text-dark-secondary) !important;
   font-size: 0.92rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.timeline-content li i {
+  color: var(--teal);
+  font-size: 0.7rem;
+  margin-top: 0.32rem;
+  flex-shrink: 0;
 }
 
 .timeline-content li::before {
-  content: "▹";
-  position: absolute;
-  left: 0;
-  color: var(--teal);
+  display: none;
 }
 
 .tech-used {
@@ -2470,7 +2634,7 @@ section {
 }
 
 .rc-item a { color: #0077b6; text-decoration: none; }
-.rc-item a:hover { text-decoration: underline; }
+.rc-item a:hover { color: var(--teal); }
 
 .recruiter-divider {
   height: 1px;
@@ -2795,14 +2959,19 @@ section {
   margin-bottom: 0.42rem;
   color: rgba(255, 255, 255, 0.92);
   font-size: 0.82rem;
-  padding-left: 1rem;
+  padding-left: 0;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flip-back li i {
+  color: var(--cyan-light);
+  font-size: 0.72rem;
+  flex-shrink: 0;
 }
 
 .flip-back li::before {
-  content: "▹";
-  position: absolute;
-  left: 0;
-  color: rgba(255,255,255,0.55);
-  font-size: 0.7rem;
+  display: none;
 }

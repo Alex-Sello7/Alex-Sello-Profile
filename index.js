@@ -367,14 +367,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!heroVisible) return;
       if (!ctx || !W || !H) { resizeHero(); return; }
       ctx.clearRect(0, 0, W, H);
-      
+
       const grad = ctx.createLinearGradient(0, 0, W, H);
       grad.addColorStop(0, '#020a14');
       grad.addColorStop(0.5, '#050f1c');
       grad.addColorStop(1, '#030810');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
-      
+
       for (let i = 0; i < 40; i++) {
         ctx.beginPath();
         const angle = Date.now() * 0.001 + i;
@@ -456,6 +456,65 @@ document.addEventListener('DOMContentLoaded', () => {
     drawSection();
   });
 
+  // ========== CTA CANVAS — SINE WAVE BACKGROUND (Cascade style) ==========
+  (function() {
+    const ctaCanvasIds = ['ctaCanvas1', 'ctaCanvas2', 'ctaCanvas3', 'ctaCanvas'];
+
+    ctaCanvasIds.forEach(id => {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      let W = 0, H = 0, visible = false, time = 0;
+
+      const visObs = new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting;
+      }, { threshold: 0 });
+      visObs.observe(canvas.parentElement || canvas);
+
+      function resize() {
+        const parent = canvas.parentElement;
+        if (parent) {
+          W = canvas.width = parent.offsetWidth || window.innerWidth;
+          H = canvas.height = parent.offsetHeight || 500;
+        }
+      }
+      resize();
+      setTimeout(resize, 200);
+      setTimeout(resize, 800);
+      window.addEventListener('resize', () => setTimeout(resize, 100));
+
+      function draw() {
+        requestAnimationFrame(draw);
+        if (!visible) return;
+        if (!W || !H) { resize(); }
+        if (!ctx || !W || !H) return;
+        ctx.clearRect(0, 0, W, H);
+
+        // Dark background fill (matching Cascade CTA)
+        ctx.fillStyle = 'rgba(3, 8, 18, 0.95)';
+        ctx.fillRect(0, 0, W, H);
+
+        // 5 layered sine waves — same formula as Cascade section canvases
+        for (let i = 0; i < 5; i++) {
+          ctx.beginPath();
+          const yOffset = Math.sin(time * 0.5 + i) * 25;
+          for (let x = 0; x <= W; x += 40) {
+            const y = H * (0.3 + i * 0.1) + Math.sin(x * 0.008 + time + i) * 35 + yOffset;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = `rgba(0, 180, 216, ${0.08 + i * 0.02})`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        time += 0.015;
+      }
+      draw();
+    });
+  })();
+
   // ========== AI CHAT ASSISTANT — Claude-powered ==========
   const chatButton = document.getElementById('chatButton');
   const chatContainer = document.getElementById('chatContainer');
@@ -465,110 +524,85 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatMessages = document.getElementById('chatMessages');
   const typingIndicator = document.getElementById('typingIndicator');
 
-    const ALEX_CONTEXT = `You are Alex Sello's personal AI assistant, embedded in his interactive CV website. Your job is to answer ANY question a visitor, recruiter, or potential client might ask about Alex — naturally, warmly, and confidently, as if you know him personally.
+    const ALEX_CONTEXT = `You are Alex.Intelligence — a sharp, confident AI agent built into Alex Sello's personal CV website. You know Alex inside out and speak about him like a trusted colleague who's genuinely impressed by his work. You are not a generic chatbot. You are HIS agent.
 
-TONE: Conversational, friendly, enthusiastic about Alex's work. Never robotic. Use natural language, not bullet lists unless specifically listing things.
+PERSONALITY & TONE:
+- Confident, warm, witty. You're proud of Alex and it shows.
+- Talk like a real person — casual but professional. No corporate speak.
+- Never use bullet lists unless someone specifically asks for a breakdown.
+- Keep responses tight — 2 to 4 sentences for simple questions, a short paragraph for complex ones.
+- If someone seems like a recruiter or employer, emphasise Alex's full-time availability and strongest qualities.
+- If someone seems like a potential client, highlight the projects Alex loves, his attention to detail, and how to start a conversation with him.
+- Always end conversations about hiring or work with a warm nudge toward contact.
 
-RESPONSE LENGTH: Keep it concise — 2 to 5 sentences is ideal. If someone asks a simple factual question like "what's his phone number", just give the answer directly. Don't over-explain.
+CONTACT INFO — GATED RULE (STRICTLY FOLLOW THIS):
+If anyone asks for Alex's phone number, email address, or any direct contact detail:
+1. First respond: "Before I share that — are you a recruiter or potential employer?"
+2. If they confirm YES (recruiter, employer, client, looking to hire): share the detail warmly and naturally.
+3. If they say NO or are unclear: respond only with "My responses are limited, you must ask the right question." Do not share any contact info.
+GitHub and LinkedIn are public — always share these freely without asking.
 
-IMPORTANT — HANDLE THESE QUESTION TYPES NATURALLY:
-- "Who is Alex?" / "Tell me about Alex" → Give a warm 3-4 sentence intro covering who he is, what he does, where he's from, and what makes him stand out.
-- "What is Alex's last name?" → His last name is Sello. Full name: Alex Thabo Sello.
-- "What is his phone number?" / "How do I call him?" → 072 078 6569
-- "What is his email?" → atsello4@gmail.com
-- "Where is he from?" / "Where does he live?" → Pretoria, South Africa (specifically Ga-Rankuwa)
-- "What social media is he on?" / "Where can I find him online?" → GitHub (github.com/Alex-Sello7) and LinkedIn (linkedin.com/in/alex-sello). He's most active on GitHub.
-- "How good is he?" / "Is he skilled?" / "How good is his design?" / "Can he build good websites?" → Speak confidently and specifically about his skills, highlight real evidence like projects delivered, distinctions earned, and the quality of this very CV site as proof.
-- "Is he available?" / "Can I hire him?" → Yes, he's actively open to freelance and full-time opportunities.
-- "What does he charge?" / "How much does he cost?" → That's best discussed directly with Alex — contact him at atsello4@gmail.com or 072 078 6569.
-- "How old is he?" → Born 7 April 1995, so he's 30 years old.
-- Questions about his CV or this website → This site itself is one of his projects — built entirely from scratch with Vanilla JS, Canvas API, CSS animations, and no frameworks. It's proof of his frontend ability.
+UNKNOWN QUESTIONS — STRICTLY FOLLOW THIS:
+If asked ANYTHING you don't have specific information about, respond with EXACTLY this phrase and nothing else:
+"My responses are limited, you must ask the right question."
+Never say "I don't know." Never make things up. Just that line.
 
-EVERYTHING YOU KNOW ABOUT ALEX:
+WHO ALEX IS:
+Full name: Alex Thabo Sello
+Date of birth: 7 April 1995 — currently 30 years old
+Location: Pretoria, Gauteng, South Africa
+Alex is an IT professional and Front End Developer who builds responsive, production-ready web interfaces and polished digital experiences. He has been freelancing since early 2024 and has delivered 12+ real-world projects for clients. He is actively seeking full-time employment while remaining open to freelance work.
 
-IDENTITY:
-- Full name: Alex Thabo Sello
-- Date of birth: 7 April 1995 (age 30)
-- Location: Pretoria, Ga-Rankuwa, South Africa
-- Student number at UNISA: 6231-625-7
+WHAT MAKES ALEX STAND OUT:
+He doesn't just code — he designs. UI/UX is where he truly thrives. He thinks in layouts, typography, spacing and interaction — the kind of detail most developers skip. He is obsessive about quality: pixel spacing, hover states, mobile behaviour, load performance — he sweats the details so clients never have to. He puts the client first always, reads briefs carefully, asks the right questions upfront, and avoids costly revision cycles by building the right thing the first time. He is self-driven and works well independently — no hand-holding needed. His code is clean, modular and maintainable. Several UNISA modules passed with DISTINCTION — proving academic rigour on top of real-world delivery. This very CV site is proof of his ability: Canvas API animations, interactive skill orbit, scroll-triggered storytelling, a working AI assistant, case study modals and recruiter mode — all in pure Vanilla JS, zero frameworks.
 
-CONTACT:
-- Phone: 072 078 6569
-- Email: atsello4@gmail.com
-- GitHub: github.com/Alex-Sello7
-- LinkedIn: linkedin.com/in/alex-sello
+PROJECTS HE LOVES:
+UI/UX design, web apps, business websites, and e-commerce. He loves projects where design and functionality have to work together perfectly.
 
-WHAT HE DOES:
-Alex is a Front End Developer and final-year IT student who builds responsive, production-ready web interfaces. He's particularly strong at translating client requirements into clean, maintainable code. He works independently, manages multiple projects, and consistently meets deadlines without needing hand-holding.
-
-HIS STRENGTHS & QUALITY:
-- His code is clean, modular, and structured — he builds reusable component libraries, not messy spaghetti code
-- He has a genuine eye for design — spacing, typography, layout hierarchy, and interaction flow are things he actively refines
-- He does mobile-first design with systematic cross-browser testing before every deployment
-- He's delivered 12+ websites for real clients, which means he knows how to handle real-world requirements, feedback, and revisions
-- Several of his UNISA modules were passed with distinction — showing academic rigour alongside practical skills
-- This interactive CV website itself is evidence of his ability: Canvas API animations, a skill orbit, scroll-triggered storytelling, a working AI assistant, case study modals, and a recruiter mode — all in Vanilla JS with zero frameworks
+CONTACT DETAILS (only share after gated confirmation — see rule above):
+Phone: 072 078 6569
+Email: atsello4@gmail.com
+GitHub (always shareable): github.com/Alex-Sello7
+LinkedIn (always shareable): linkedin.com/in/alex-sello
 
 TECHNICAL SKILLS:
-- Frontend: HTML5, CSS3, JavaScript ES6+, Bootstrap, React (basics — component structure, hooks, state)
-- Backend: Node.js, Express, REST APIs
-- Databases: SQL (certified), basic MongoDB
-- Tools: Git & GitHub, VS Code, WordPress (certified), SQL Server Management Studio, Microsoft 365
-- Practices: Responsive/mobile-first design, reusable UI components, cross-browser compatibility testing, clean code & maintainability, structured Git workflows, Agile basics
+Frontend: HTML5, CSS3, JavaScript ES6+, Bootstrap, React (component structure, hooks, state)
+Backend: Node.js, Express, REST APIs
+Databases: SQL (certified), MongoDB (basics)
+Tools: Git & GitHub, VS Code, WordPress (certified), SQL Server Management Studio, Microsoft 365
+Practices: Mobile-first responsive design, reusable UI components, cross-browser testing, clean maintainable code, structured Git workflows, Agile basics
 
 EXPERIENCE:
 1. Freelance Web Developer — Self-employed (February 2024 – Present)
-   - Delivered 12+ responsive websites for small businesses
-   - Increased cross-device reliability with mobile-first design and cross-browser testing
-   - Built reusable UI component libraries, reducing revision cycles
-   - Managed multiple concurrent projects independently, meeting deadlines
-   - Decreased revision cycles by carefully interpreting stakeholder scope documents
-   - Enhanced UX through spacing, typography, layout hierarchy, and interaction flow
-   - Tech stack: HTML5, CSS3, JavaScript ES6+, Bootstrap, Git, WordPress
+Delivered 12+ responsive websites for small businesses. Built reusable component libraries that cut revision cycles significantly. Managed multiple projects simultaneously and always met agreed deadlines. Enhanced UX through careful attention to spacing, typography, layout hierarchy and interaction flow.
 
 2. Sales Assistant — Street Fever (October 2018 – December 2019)
-   - Fast-paced retail: client communication, transaction handling, stock management
-   - Developed strong communication and problem-solving skills
+Client communication, transaction handling and stock management in a fast-paced retail environment. Built strong interpersonal and problem-solving skills.
 
 EDUCATION:
 1. Diploma in Information Technology — UNISA (2022 – Present)
-   - 216 out of 360 credits completed — NQF Level 6
-   - Modules passed with DISTINCTION: Business Management (80%), Ethical ICT (76%), Network Technical Skills (75%), Interactive Programming (82%)
-   - All other modules: Web Design, Databases, Systems Analysis, Object-Oriented Analysis, Business Informatics I/II/III, GUI Programming, Workstation Skills
-   - Qualification is in progress — expected to complete remaining 144 credits
+216 out of 360 credits completed. NQF Level 6. Modules passed with DISTINCTION: Business Management (80%), Ethical ICT (76%), Network Technical Skills (75%), Interactive Programming (82%).
 
 2. National Senior Certificate — Modiri Secondary School (December 2013)
-   - Subjects: Mathematics, Physical Science, Life Science, Geography
 
-CERTIFICATIONS (all verified):
-- Full Stack Web Development Bootcamp — Udemy (HTML, CSS, JS, React, Node, Express, MongoDB)
-- Full Stack Web Development — FNB App Academy (industry-aligned programme)
+CERTIFICATIONS:
+- Full Stack Web Development Bootcamp — Udemy
+- Full Stack Web Development — FNB App Academy
 - SQL for Data Analysis — Simplilearn
 - WordPress Development — Simplilearn
 
 PROJECTS:
 1. Cascade Creations — https://alex-sello7.github.io/CascadeMainWebsite/
-   - Responsive single-page business website built from scratch
-   - Reusable UI sections, mobile-first, consistent design patterns
+A full business website for his own digital studio — responsive, structured, built from scratch.
 
 2. Seamless Travel Revamp — https://alex-sello7.github.io/Seamless-Travel/
-   - Full layout redesign, improved visual hierarchy and usability
-   - Cross-browser tested, structured CSS organisation
+A complete layout redesign improving visual hierarchy, usability and cross-browser compatibility.
 
-3. Interactive Storytelling CV (this site — the one you're on right now)
-   - Built entirely from scratch: Canvas API animations, skill orbit with SVG connector lines
-   - Scroll-triggered AOD animations, case study modals, recruiter mode, AI assistant
-   - Zero frameworks — pure HTML, CSS, Vanilla JavaScript
+3. Interactive Storytelling CV — this site
+Built entirely in pure HTML, CSS and Vanilla JS. Canvas animations, skill orbit with SVG connector lines, scroll-triggered animations, AI assistant, case study modals, and recruiter mode.
 
-PERSONALITY & WORK STYLE:
-- Self-driven and works well independently without supervision
-- Detail-oriented — sweats the small stuff like pixel spacing and interaction timing
-- Communicates clearly with clients and interprets briefs carefully before building
-- Passionate about the craft — this CV site is something he built in his own time to stand out
-
-AVAILABILITY: Actively open to freelance projects and full-time employment opportunities.
-
-If asked something genuinely not covered above (like his hobbies or personal opinions), be honest that you don't have that info and suggest they reach out to Alex directly via email or phone.`;
+AVAILABILITY:
+Alex is actively seeking full-time employment and is open to freelance projects. Ready to start immediately.`
 
   const chatHistory = [];
 
@@ -604,44 +638,50 @@ If asked something genuinely not covered above (like his hobbies or personal opi
     } catch (err) {
       // Fallback keyword responses if API is unavailable
       const lower = userMessage.toLowerCase();
+      const LIMITED = "My responses are limited, you must ask the right question.";
+      const CONTACT_GATE = "Before I share that — are you a recruiter or potential employer?";
 
-      // Identity & personal
+      // Identity
       if (lower.includes('who is') || lower.includes('tell me about') || lower.includes('introduce'))
-        return "Alex Thabo Sello is a Front End Developer and IT student from Pretoria, South Africa. He builds responsive, production-ready websites and has delivered 12+ projects for real clients. He's currently studying for a Diploma in IT at UNISA and is open to freelance and full-time work.";
+        return "Alex Thabo Sello is an IT professional and Front End Developer based in Pretoria, Gauteng, South Africa. He builds responsive, production-ready web interfaces and has delivered 12+ real-world projects. He's actively seeking full-time employment and open to freelance work.";
       if (lower.includes('last name') || lower.includes('surname') || lower.includes('full name'))
-        return "His full name is Alex Thabo Sello. Last name: Sello.";
+        return "His full name is Alex Thabo Sello.";
       if (lower.includes('age') || lower.includes('born') || lower.includes('old'))
         return "Alex was born on 7 April 1995, making him 30 years old.";
       if (lower.includes('where') && (lower.includes('from') || lower.includes('live') || lower.includes('based')))
-        return "Alex is based in Pretoria, South Africa — specifically Ga-Rankuwa.";
+        return "Alex is based in Pretoria, Gauteng, South Africa.";
 
-      // Contact
-      if (lower.includes('phone') || lower.includes('call') || lower.includes('number'))
-        return "Alex's phone number is 072 078 6569.";
-      if (lower.includes('email') || lower.includes('mail'))
-        return "You can email Alex at atsello4@gmail.com.";
-      if (lower.includes('social') || lower.includes('github') || lower.includes('linkedin') || lower.includes('find him') || lower.includes('online'))
-        return "You can find Alex on GitHub at github.com/Alex-Sello7 and on LinkedIn at linkedin.com/in/alex-sello. He's most active on GitHub where you can browse his projects.";
-      if (lower.includes('contact') || lower.includes('reach') || lower.includes('hire') || lower.includes('available'))
-        return "Alex is actively available for freelance and full-time opportunities! Reach him at 072 078 6569 or atsello4@gmail.com.";
+      // Contact — gated
+      if (lower.includes('phone') || lower.includes('call') || lower.includes('number') || lower.includes('email') || lower.includes('contact') || lower.includes('reach'))
+        return CONTACT_GATE;
 
-      // Quality / skills
+      // Social — always free
+      if (lower.includes('github'))
+        return "You can find Alex on GitHub at github.com/Alex-Sello7 — browse his projects there.";
+      if (lower.includes('linkedin'))
+        return "Connect with Alex on LinkedIn at linkedin.com/in/alex-sello.";
+      if (lower.includes('social') || lower.includes('online') || lower.includes('find him'))
+        return "Alex is on GitHub (github.com/Alex-Sello7) and LinkedIn (linkedin.com/in/alex-sello). GitHub is where his work lives.";
+
+      // Skills & quality
       if (lower.includes('how good') || lower.includes('is he good') || lower.includes('skill') || lower.includes('capable') || lower.includes('design') || lower.includes('developer'))
-        return "Alex has a strong eye for design and writes clean, modular code. He's delivered 12+ websites for real clients, passed multiple UNISA modules with distinction, and built this entire interactive CV from scratch in Vanilla JS — no frameworks. That's a pretty solid answer right there.";
+        return "Alex has a genuine eye for design and writes clean, modular code. He's delivered 12+ websites for real clients, passed multiple UNISA modules with distinction, and built this entire interactive CV from scratch in Vanilla JS with zero frameworks. The work speaks for itself.";
       if (lower.includes('tech') || lower.includes('stack') || lower.includes('language'))
-        return "Alex works with HTML5, CSS3, JavaScript ES6+, Bootstrap, React (basics), Node.js, SQL, Git, and WordPress. He's also comfortable with systems analysis, database design, and business informatics.";
+        return "Alex works with HTML5, CSS3, JavaScript ES6+, Bootstrap, React, Node.js, SQL, Git and WordPress. His sweet spot is UI/UX-heavy frontend work backed by solid backend knowledge.";
 
-      // Work & projects
+      // Work & availability
+      if (lower.includes('hire') || lower.includes('available') || lower.includes('open to work') || lower.includes('looking for work'))
+        return "Yes — Alex is actively looking for full-time opportunities and is open to freelance projects. He's ready to start immediately.";
       if (lower.includes('project') || lower.includes('portfolio') || lower.includes('built') || lower.includes('work'))
-        return "Alex has built 12+ projects including Cascade Creations (business website), Seamless Travel (layout revamp), and this interactive CV. Check the Projects section to see case studies!";
+        return "Alex has built 12+ projects including Cascade Creations, a Seamless Travel revamp, and this interactive CV. He loves UI/UX design, web apps, business websites and e-commerce.";
       if (lower.includes('experience') || lower.includes('job') || lower.includes('career'))
-        return "Alex has been freelancing as a web developer since February 2024, delivering responsive sites for small businesses. Before that he worked in sales at Street Fever, where he developed strong communication and client-handling skills.";
+        return "Alex has been freelancing since February 2024, delivering responsive sites for small businesses. Before that he worked in sales at Street Fever, where he sharpened his client communication skills.";
       if (lower.includes('education') || lower.includes('study') || lower.includes('degree') || lower.includes('unisa'))
-        return "Alex is studying for a Diploma in IT at UNISA with 216 of 360 credits completed. Several modules were passed with distinction. He also completed his NSC at Modiri Secondary School in 2013.";
+        return "Alex is completing a Diploma in IT at UNISA — 216 of 360 credits done, with several modules passed with distinction.";
       if (lower.includes('certif'))
         return "Alex holds 4 certifications: Full Stack Bootcamp (Udemy), Full Stack Web Dev (FNB App Academy), SQL for Data Analysis (Simplilearn), and WordPress Development (Simplilearn).";
 
-      return "I'm Alex's AI assistant! You can ask me anything — who he is, his contact details, his skills, projects, social media, or whether he's available for work.";
+      return LIMITED;
     }
   }
 
